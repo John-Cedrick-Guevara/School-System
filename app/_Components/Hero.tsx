@@ -18,7 +18,7 @@ const Hero = () => {
       {/* text part */}
       <div className="space-y-5">
         <h1 className="font-bold text-4xl leading-12">
-          Welcome to <span className="text-blue-500 text-5xl">OLOPSC</span>{" "}
+          Welcome to <span className="text-blue-700 text-5xl">OLOPSC</span>{" "}
           school system
         </h1>
         <p className="text-muted-foreground">
@@ -29,11 +29,11 @@ const Hero = () => {
 
       {/* sliding images */}
       {/* main container */}
-      <div className=" overflow-hidden my-10 h-80 z-0">
+      <div className=" overflow-hidden my-10 h-80 z-0 ">
         {/* sliding images container */}
         <div className=" w-full animate-move-up">
           {images.map((item, index) => (
-            <Image
+            <img
               key={index}
               src={`/${item}`}
               width={170}
@@ -44,6 +44,7 @@ const Hero = () => {
               style={{
                 top: `${index % 2 === 1 && "50px"}`,
                 left: `${index % 2 === 1 && "0.5rem"}`,
+                
               }}
               alt="asd"
             />

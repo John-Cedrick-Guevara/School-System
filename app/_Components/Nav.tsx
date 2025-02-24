@@ -1,11 +1,12 @@
 "use client";
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const Nav = () => {
   const [showNav, setShowNav] = useState<Boolean>(false);
   return (
-    <nav className="px-8 py-5 dark:bg-wh">
+    <nav className=" py-5 dark:bg-wh px-8">
       {/* Mobile nav */}
       <div className="flex items-center justify-between relative ">
         <div className="font-bold text-lg">School System</div>
@@ -24,22 +25,30 @@ const Nav = () => {
         >
           <ul className="text-lg font-bold space-y-4 text-center">
             <li>
-              <a href="#">Home</a>
+              <Link href={"/"}>Home</Link>
             </li>
             <li>
-              <a href="#">About</a>
+              <Link href={"/"}>About</Link>
             </li>
             <li>
-              <a href="#">How it works</a>
+              <Link href={"/"}>How it works</Link>
             </li>
             <li>
-              <a href="#">Links</a>
+              <Link href={"/"}>Links</Link>
             </li>
           </ul>
           <hr className="bg-black my-6" />
           <div className="flex flex-col gap-4">
-            <Button variant={"outline"}>Log In</Button>
-            <Button>Sign up</Button>
+            <Link href={"/sign_in"}>
+              <Button className="w-full " variant={"outline"}>
+                Sign in
+              </Button>
+            </Link>
+            <Link href={"/sign_up"}>
+              <Button className="w-full " variant={"secondary"}>
+                Sign up
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
