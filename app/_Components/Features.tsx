@@ -5,30 +5,36 @@ const Features = () => {
     {
       title: "Scheduling",
       description:
-        "Teachers can choose their schedule depending on the availability of the section they'll be teaching. Schedules are dynamically viewed, once teacher choose their schedule it will reflect on the end of other teachers to avoid conflicts.",
+        "Teachers can efficiently create, update, and manage class schedules with automated conflict detection. Students can view their assigned class schedules in real time, ensuring they stay organized. The system also allows for schedule adjustments while keeping all stakeholders informed of any changes.",
     },
     {
       title: "Viewing of grades",
       description:
-        "Students can view their grades through the portal. Teachers can encode grades of their students.",
+        "Users can log in and quickly navigate the system without hassle. The intuitive interface ensures that all essential features are easily reachable. With a single account, students and teachers can securely access their schedules, grades, and other relevant information.",
     },
     {
       title: "Easy access",
       description:
-        "Students and teachers can access the website through their browsers. Schedules and grades are one tap away from viewing it.",
+        "Students can check their grades instantly through a clear and organized dashboard. The system updates grades in real-time, ensuring transparency and accuracy. Historical grade records are also available, allowing students to track their academic progress over time.",
     },
   ];
 
   return (
-    <section className="my-20 px-8">
-      <h1 className="text-3xl font-bold my-10">How it works</h1>
+    <section id="features" className="py-10 px-8 scroll-mt-20" >
+      <h1 className="text-4xl font-bold my-10">Features</h1>
 
-      <div className="flex flex-col gap-10 ">
+      <div className="flex flex-wrap justify-center w-fit mx-auto max-md:flex-col gap-10  ">
         {features.map((item, key) => {
           return (
-            <div key={key} className="rounded-lg bg-secondary shadow-lg transition-all hover:scale-105" >
-              <h1 className="bg-blue-700 text-white text-xl font-semibold px-5 py-2 rounded-t-lg">{item.title}</h1>
-              <p className="p-4 text-l">{item.description}</p>
+            <div
+              style={{ marginBottom: `${key * -20}px`, marginTop: `${key * 20}px` }}
+              key={key}
+              className="rounded-lg  max-w-md shadow-lg transition-all hover:scale-[103%] "
+            >
+              <h1 className="bg-blue-700 text-white text-xl font-semibold px-5 py-2 rounded-t-lg">
+                {item.title}
+              </h1>
+              <p className="p-6 text-slate-500">{item.description}</p>
             </div>
           );
         })}

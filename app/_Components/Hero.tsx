@@ -14,11 +14,11 @@ const Hero = () => {
     "playground.jpg",
   ];
   return (
-    <main className="py-10 px-8">
+    <main id="home" className="py-20 px-8 flex max-lg:flex-col items-center justify-between flex-grow gap-10">
       {/* text part */}
-      <div className="space-y-5">
-        <h1 className="font-bold text-4xl leading-12">
-          Welcome to <span className="text-blue-700 text-5xl">OLOPSC</span>{" "}
+      <div className="space-y-5 max-w-lg mx-auto">
+        <h1 className="font-bold text-6xl leading-12">
+          Welcome to <span className="text-blue-700 text-7xl">OLOPSC</span>{" "}
           school system
         </h1>
         <p className="text-muted-foreground">
@@ -29,7 +29,7 @@ const Hero = () => {
 
       {/* sliding images */}
       {/* main container */}
-      <div className=" overflow-hidden my-10 h-80 z-0 ">
+      <div className=" overflow-hidden scale-125 my-10 h-80 z-0 max-w-sm mx-auto">
         {/* sliding images container */}
         <div className=" w-full animate-move-up">
           {images.map((item, index) => (
@@ -38,13 +38,12 @@ const Hero = () => {
               src={`/${item}`}
               width={170}
               height={0}
-              className={`relative rounded-lg my-2 object-fit: cover h-25 inline-block ${
+              className={`relative rounded-lg my-2 object-fit: cover h-25 inline-block  ${
                 index % 2 === 1 ? "left-0" : ""
               }}`}
               style={{
                 top: `${index % 2 === 1 && "50px"}`,
                 left: `${index % 2 === 1 && "0.5rem"}`,
-                
               }}
               alt="asd"
             />

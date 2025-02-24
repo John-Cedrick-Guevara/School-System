@@ -2,43 +2,62 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { url } from "inspector";
 
 const Nav = () => {
   const [showNav, setShowNav] = useState<Boolean>(false);
+
+  const navLinks = [
+    {
+      name: "Home",
+      url: "home",
+    },
+    {
+      name: "About",
+      url: "about",
+    },
+    {
+      name: "Features",
+      url: "features",
+    },
+    {
+      name: "Socials",
+      url: "socials",
+    },
+  ];
+
   return (
-    <nav className=" py-5 dark:bg-wh px-8">
+    <nav className=" py-5 dark:bg-wh px-8 sticky top-0 bg-white z-10">
       {/* Mobile nav */}
       <div className="flex items-center justify-between relative ">
-        <div className="font-bold text-lg">School System</div>
+        <div className="font-bold text-2xl">School System</div>
 
+        {/* hamburger icon */}
         <img
           onClick={() => setShowNav((prev) => !prev)}
-          className="cursor-pointer"
+          className="cursor-pointer md:hidden"
           src="burger.svg"
           alt=""
         />
         {/* floating nav for mobile */}
         <div
-          className={`z-10 absolute bg-secondary p-5 rounded-lg w-full top-20 transition-all ${
+          className={`z-10 max-md:absolute max-md:bg-secondary max-md:p-5 rounded-lg w-full md:max-w-xl max-md:mx-auto top-20 left-0 right-0 transition-all  ${
             showNav ? "scale-100" : "scale-0"
-          }`}
+          } md:scale-100 md:flex justify-between `}
         >
-          <ul className="text-lg font-bold space-y-4 text-center">
-            <li>
-              <Link href={"/"}>Home</Link>
-            </li>
-            <li>
-              <Link href={"/"}>About</Link>
-            </li>
-            <li>
-              <Link href={"/"}>How it works</Link>
-            </li>
-            <li>
-              <Link href={"/"}>Links</Link>
-            </li>
+          <ul className="text-lg font-semibold gap-4 text-center md:flex items-center justify-even">
+            {navLinks.map((item, key) => {
+              return (
+                <li key={key} className="text-slate-600 transition-colors hover:text-black">
+                  <a href={`#${item.url}`}>{item.name}</a>
+                </li>
+              );
+            })}
           </ul>
+
           <hr className="bg-black my-6" />
-          <div className="flex flex-col gap-4">
+          {/* buttons */}
+          <div className="flex max-md:flex-col md:items-center justify-center gap-4">
             <Link href={"/sign_in"}>
               <Button className="w-full " variant={"outline"}>
                 Sign in
