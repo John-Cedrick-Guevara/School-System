@@ -29,7 +29,7 @@ const Hero = () => {
 
       {/* sliding images */}
       {/* main container */}
-      <div className=" overflow-hidden scale-125 my-10 h-80 z-0 max-w-sm mx-auto">
+      <div className=" overflow-hidden md:scale-125 my-10 h-80 z-0 max-w-sm mx-auto">
         {/* sliding images container */}
         <div className=" w-full animate-move-up">
           {images.map((item, index) => (

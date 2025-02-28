@@ -13,50 +13,44 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// prisma/schema.prisma
-
-
-
-// Users can be either STUDENT or TEACHER.
-// Students are linked to a Section; teachers are not.
-
 // Users can be either STUDENT or TEACHER.
 // Students are linked to a Section; teachers are not.
 model User {
-  id         String    @id 
-  name       String
-  email      String    @unique
-  password   String
-  role       Role
-  // Only students will have a section
-  section    Section?  @relation(fields: [sectionId], references: [id])
-  sectionId  String?   
-  // For teachers: list of schedules they handle.
-  schedules  Schedule[]
-  // For students: list of grades they receive.
-  grades     Grade[]
+  id        String     @id
+  name      String
+  email     String     @unique
+  password  String
+  role      Role
+  section   Section?   @relation(fields: [sectionId], references: [id])
+  sectionId String?
+  schedules Schedule[]
+  // Grades received as a student
+  grades    Grade[]
+  // Grades assigned as a teacher
+  teacherGrades Grade[] @relation("TeacherGrades")
 
   @@map("users")
-  Grade Grade[] @relation("TeacherGrades")
 }
+
+
 
 // Sections represent class groups (e.g., Grade 10 - A).
 model Section {
-  id        String   @id @default(uuid())
-  name      String   @unique
+  id        String     @id @default(uuid())
+  name      String     @unique
   // A section can have many students.
   students  User[]
   // A section can have many schedules.
   schedules Schedule[]
+  Grade     Grade[]
 
   @@map("sections")
-  Grade Grade[]
 }
 
 // Subjects represent the courses (e.g., Math, Science).
 model Subject {
-  id        String    @id @default(uuid())
-  name      String    @unique
+  id        String     @id @default(uuid())
+  name      String     @unique
   schedules Schedule[]
   grades    Grade[]
 
@@ -66,43 +60,41 @@ model Subject {
 // Schedules represent a teacher's assigned class slot.
 // We use @@unique to prevent overlapping schedules for a given section and teacher.
 model Schedule {
-  id         String   @id @default(uuid())
-  teacher    User     @relation(fields: [teacherId], references: [id])
-  teacherId  String
-  section    Section  @relation(fields: [sectionId], references: [id])
-  sectionId  String
-  subject    Subject  @relation(fields: [subjectId], references: [id])
-  subjectId  String
-  day        Day
-  startTime  DateTime
-  endTime    DateTime
+  id        String   @id @default(uuid())
+  teacher   User     @relation(fields: [teacherId], references: [id])
+  teacherId String
+  section   Section  @relation(fields: [sectionId], references: [id])
+  sectionId String
+  subject   Subject  @relation(fields: [subjectId], references: [id])
+  subjectId String
+  day       Day
+  startTime DateTime
+  endTime   DateTime
 
   // Ensure that in a given section, no two schedules overlap.
   @@unique([sectionId, day, startTime, endTime])
   // Ensure that a teacher cannot be double-booked.
   @@unique([teacherId, day, startTime, endTime])
-
   @@map("schedules")
 }
 
 // Grades represent the marks a student receives.
 // We ensure that a student has only one grade per subject.
 model Grade {
-  id         String   @id @default(uuid())
-  student    User     @relation(fields: [studentId], references: [id])
-  studentId  String
-  teacher    User     @relation("TeacherGrades", fields: [teacherId], references: [id])
-  teacherId  String
-  section    Section  @relation(fields: [sectionId], references: [id])
-  sectionId  String
-  subject    Subject  @relation(fields: [subjectId], references: [id])
-  subjectId  String
-  grade      Float
-  createdAt  DateTime @default(now())
+  id        String   @id @default(uuid())
+  student   User     @relation(fields: [studentId], references: [id])
+  studentId String
+  teacher   User     @relation("TeacherGrades", fields: [teacherId], references: [id])
+  teacherId String
+  section   Section  @relation(fields: [sectionId], references: [id])
+  sectionId String
+  subject   Subject  @relation(fields: [subjectId], references: [id])
+  subjectId String
+  grade     Float
+  createdAt DateTime @default(now())
 
   // Each student can only have one grade for a given subject.
   @@unique([studentId, subjectId])
-
   @@map("grades")
 }
 
