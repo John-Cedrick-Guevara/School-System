@@ -49,7 +49,7 @@ model Section {
 
 // Subjects represent the courses (e.g., Math, Science).
 model Subject {
-  id        String     @id @default(uuid())
+  id        String     @id 
   name      String     @unique
   schedules Schedule[]
   grades    Grade[]
@@ -60,7 +60,7 @@ model Subject {
 // Schedules represent a teacher's assigned class slot.
 // We use @@unique to prevent overlapping schedules for a given section and teacher.
 model Schedule {
-  id        String   @id @default(uuid())
+  id        String   @id @default(uuid()) 
   teacher   User     @relation(fields: [teacherId], references: [id])
   teacherId String
   section   Section  @relation(fields: [sectionId], references: [id])
@@ -101,6 +101,7 @@ model Grade {
 enum Role {
   STUDENT
   TEACHER
+  ADMIN
 }
 
 enum Day {

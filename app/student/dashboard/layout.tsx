@@ -1,7 +1,6 @@
+import Nav from "@/app/_Components/Nav";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,12 +22,31 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const navLinks = [
+ {
+        name: "Home",
+        url: "home",
+      },
+      {
+        name: "View Grades",
+        url: "grades",
+      },
+      {
+        name: "View Schedules",
+        url: "schedules",
+      },
+  ];
+
   return (
-    <html lang="en"  className="scroll-smooth">
+    <html lang="en" className="scroll-smooth">
       <body
         className={` ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-         <>{children}</>
+        <Nav navLinks={navLinks} showLogOut={true} />
+        <main className="p-12">
+
+        {children}
+        </main>
       </body>
     </html>
   );

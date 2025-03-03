@@ -22,7 +22,7 @@ import {
 import { signUpSchema } from "@/lib/schemas/schemaParser";
 
 const signUp_page = () => {
-  const [role, setRole] = useState<"STUDENT" | "TEACHER">("STUDENT");
+  const [role, setRole] = useState<"STUDENT" | "TEACHER" | "ADMIN">("STUDENT");
   const [section, setsection] = useState("");
   const [error, setError] = useState("");
   const [data, setData] = useState({
@@ -32,7 +32,7 @@ const signUp_page = () => {
     password: "",
     sectionId: section,
     id: "",
-    role: "STUDENT",
+    role: "ADMIN",
   });
 
   const sections = [
@@ -212,7 +212,7 @@ const signUp_page = () => {
           />
         </div>
 
-        <div className="flex items-center justify-center gap-2">
+        {/* <div className="flex items-center justify-center gap-2">
           <h1>Student</h1>
           <Switch
             onClick={() =>
@@ -223,7 +223,7 @@ const signUp_page = () => {
             }
           />
           <h1>Teacher</h1>
-        </div>
+        </div> */}
 
         <Button variant={"default"} size={"lg"}>
           Sing Up

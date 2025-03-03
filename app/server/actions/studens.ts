@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { Role } from "@prisma/client";
 
 export async function createUser(data: {
   name: string;
@@ -12,7 +13,7 @@ export async function createUser(data: {
   password: string;
   sectionId?: string;
   id: string;
-  role: "STUDENT" | "TEACHER";
+  role: "STUDENT" | "TEACHER"| "ADMIN";
 }) {
   console.log("Server action received data:", data);
 
@@ -29,13 +30,13 @@ export async function createUser(data: {
         name: data.name,
         email: data.email,
         password: hashedPassword,
-        role: data.role,
+        role: data.role as Role,
         sectionId: data.sectionId || null,
       },
     });
     console.log("Created user:", newUser);
 
-    return newUser; // Return the object directly
+    return {newUser}; // Return the object directly
   } catch (error) {
     console.error("Error creating user:", error);
     throw error; // Rethrow error instead of returning it
@@ -49,24 +50,25 @@ export async function logInUser(email: string, password: string) {
 
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user) {
-    throw new Error("No user found.");
+    return "No user found.";
   }
 
-  const passwordMatch = await bcrypt.compare(password, user.password);
   try {
+    const passwordMatch = await bcrypt.compare(password, user.password);
+
     if (!passwordMatch) {
-      throw new Error("Invalid Password");
+      return {message :"Invalid Password", success :false };
     }
 
     // ✅ Generate JWT
     const token = jwt.sign(
-      { userId: user.id, role: user.role },
+      { userData: user, role: user.role },
       process.env.JWT_SECRET!,
       {
-        expiresIn: "20s",
+        expiresIn: "1h",
       }
     );
-
+    
     (
       await // ✅ Store token in HTTP-only cookies
       cookies()

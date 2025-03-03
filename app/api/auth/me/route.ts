@@ -13,7 +13,7 @@ export async function GET() {
     }
     // gets the user data from token
     const userData = jwt.verify(token, process.env.JWT_SECRET!);
-    console.log("Decoded token:", userData);
+
     return NextResponse.json(userData);
   } catch (error) {
     return NextResponse.json({ error: "Invalid token" }, { status: 401 });

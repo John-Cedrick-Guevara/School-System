@@ -1,7 +1,7 @@
+import Nav from "@/app/_Components/Nav";
+import ProtectedRoute from "@/app/_Components/ProtectedRoute";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,12 +23,30 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const navLinks = [
+    {
+      name: "Home",
+      url: "dashboard",
+    },
+    {
+      name: "Set Grades",
+      url: "dashboard/setGrades",
+    },
+    {
+      name: "Set Schedules",
+      url: "dashboard/setSchedules",
+    },
+  ];
+
   return (
-    <html lang="en"  className="scroll-smooth">
-      <body
+    <html lang="en" className="scroll-smooth">
+         <body
         className={` ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-         <>{children}</>
+        <ProtectedRoute role="TEACHER">
+          <Nav navLinks={navLinks} showLogOut={true} />
+          <main className="p-12">{children}</main>
+        </ProtectedRoute>
       </body>
     </html>
   );

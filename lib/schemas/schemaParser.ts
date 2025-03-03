@@ -13,6 +13,6 @@ export const signUpSchema = z.object({
 
 export const logInSchema = z.object({
   action: z.string().nonempty("Action required"),
-  email: z.string().email(),
+  email: z.string().email().nonempty(),
   password: z.string().min(6, "Password must be at least 6 characters long"),
 });

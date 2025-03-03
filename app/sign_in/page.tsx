@@ -37,11 +37,17 @@ const signIn_page = () => {
       try {
         if (parsedData) {
           const res = await axios.post("api/auth", parsedData.data);
+
+          if (!res.data.message.success) {
+            setError(res.data.message.message);
+          }
           const role = res.data.message.user.role;
-          console.log(role);
           router.push(
-            `/${role === "STUDENT" ? "student" : "teacher"}/dashboard`
+            `/${role === "ADMIN" ? "admin" : role === "STUDENT" ? "student" : "teacher"}/dashboard`
           );
+
+          console.log(res.data.message);
+          // const role = res.data.message.user.role;
         } else {
           console.log("no data given");
         }
@@ -50,6 +56,10 @@ const signIn_page = () => {
       }
     }
   }
+
+  setTimeout(() => {
+    setError("");
+  }, 3000);
 
   return (
     <main className="p-8 ">
@@ -62,8 +72,14 @@ const signIn_page = () => {
       </Link>
       <h1 className="text-4xl font-bold my-16 text-center">Log In</h1>
 
-      {/* form */}
+      {/* error message */}
+      {error && (
+        <h1 className="bg-red-500 p-2 rounded-md text-white text-center mb-4 max-w-lg mx-auto">
+          {error}
+        </h1>
+      )}
 
+      {/* form */}
       <form
         onSubmit={handleSubmit}
         className="flex flex-col gap-8 w-full max-w-sm mx-auto mt-20"
