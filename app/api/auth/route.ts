@@ -8,7 +8,8 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { action, email, password, id, role, sectionId, name } = body;
 
-    console.log(action);
+  console.log("data", body);
+
 
     // creates the new user
     if (action === "signup") {

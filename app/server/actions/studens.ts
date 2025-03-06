@@ -13,7 +13,7 @@ export async function createUser(data: {
   password: string;
   sectionId?: string;
   id: string;
-  role: "STUDENT" | "TEACHER"| "ADMIN";
+  role: "STUDENT" | "TEACHER" | "ADMIN";
 }) {
   console.log("Server action received data:", data);
 
@@ -36,10 +36,19 @@ export async function createUser(data: {
     });
     console.log("Created user:", newUser);
 
-    return {newUser}; // Return the object directly
+    return { newUser }; // Return the object directly
   } catch (error) {
     console.error("Error creating user:", error);
     throw error; // Rethrow error instead of returning it
+  }
+}
+
+export async function getUsers() {
+  try {
+    const users = await prisma.user.findMany();
+    return { users };
+  } catch (error) {
+    return { error };
   }
 }
 
@@ -57,7 +66,7 @@ export async function logInUser(email: string, password: string) {
     const passwordMatch = await bcrypt.compare(password, user.password);
 
     if (!passwordMatch) {
-      return {message :"Invalid Password", success :false };
+      return { message: "Invalid Password", success: false };
     }
 
     // ✅ Generate JWT
@@ -68,15 +77,56 @@ export async function logInUser(email: string, password: string) {
         expiresIn: "1h",
       }
     );
-    
+
     (
       await // ✅ Store token in HTTP-only cookies
       cookies()
-    ).set("token", token, { httpOnly: true });  
+    ).set("token", token, { httpOnly: true });
 
     // ✅ Return only necessary data
-    return {token, user};
+    return { token, user };
   } catch (error) {
     NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
+}
+
+export async function updateUser(data: {
+  name: string;
+  email: string;
+  password: string;
+  sectionId?: string;
+  id: string;
+  role: "STUDENT" | "TEACHER" | "ADMIN";
+}) {
+  try {
+    const res = await prisma.user.update({
+      where: {
+        email: data.email,
+      },
+      data: {
+        id: data.id,
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        role: data.role as Role,
+        sectionId: data.sectionId || null,
+      },
+    });
+    return res;
+  } catch (error) {
+    return error;
+  }
+}
+
+export async function deleteUser(email: string) {
+  try {
+    const res = await prisma.user.delete({
+      where: {
+        email: email,
+      },
+    });
+    return res;
+  } catch (error) {
+    return error;
   }
 }
