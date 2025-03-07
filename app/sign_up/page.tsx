@@ -21,6 +21,8 @@ import {
 } from "@radix-ui/react-dropdown-menu";
 import { signUpSchema } from "@/lib/schemas/schemaParser";
 import CreateUserComponent from "../_Components/CreateUserComponent";
+import BackButton from "../_Components/BackButton";
+import { usePathname } from "next/navigation";
 
 
 
@@ -77,12 +79,8 @@ const signUp_page = () => {
   return (
     <main className="p-8 ">
       {/* back button */}
-      <Link href={"/"}>
-        <Button variant={"outline"}>
-          <img className=" rotate-180 w-6" src="arrow.png" alt="" />
-          <h1>Back</h1>
-        </Button>
-      </Link>
+      <BackButton path={usePathname()}/>
+      
       <h1 className="text-4xl font-bold my-16 text-center">Sign Up</h1>
 
       {/* error message */}

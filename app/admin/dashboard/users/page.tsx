@@ -21,6 +21,8 @@ import CreateUserComponent from "@/app/_Components/CreateUserComponent";
 import { Button } from "@/components/ui/button";
 import { url } from "inspector";
 import useSWR from "swr";
+import { usePathname } from "next/navigation";
+import BackButton from "@/app/_Components/BackButton";
 const fetcher = (url: string) => axios.get(url).then((res) => res.data.users);
 
 interface User {
@@ -34,6 +36,8 @@ interface User {
 }
 
 const usersPage = () => {
+  const path = usePathname();
+
   const {
     data: allUsers,
     error,
@@ -49,7 +53,6 @@ const usersPage = () => {
     role: "",
     sectionId: "",
   });
-  const [loading, setLoading] = useState(true);
 
   async function handleSubmitEditedUser(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -67,7 +70,7 @@ const usersPage = () => {
   async function handleDelete(data: User) {
     try {
       const res = await axios.delete("/api/students", { data: data });
-      mutate()
+      mutate();
     } catch (error) {
       console.log(error);
     }
@@ -86,6 +89,7 @@ const usersPage = () => {
 
   return (
     <div className="mt-10 z-10 ">
+      <BackButton path={path} />
       <Table>
         <TableCaption>Users:</TableCaption>
         <TableHeader>

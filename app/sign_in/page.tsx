@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { logInSchema } from "@/lib/schemas/schemaParser";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import BackButton from "../_Components/BackButton";
 
 const signIn_page = () => {
   const router = useRouter();
@@ -61,15 +62,13 @@ const signIn_page = () => {
     setError("");
   }, 3000);
 
+  
+
   return (
     <main className="p-8 ">
       {/* back button */}
-      <Link href={"/"}>
-        <Button variant={"outline"}>
-          <img className=" rotate-180 w-6" src="arrow.png" alt="" />
-          <h1>Back</h1>
-        </Button>
-      </Link>
+     
+     <BackButton path={usePathname()}/>
       <h1 className="text-4xl font-bold my-16 text-center">Log In</h1>
 
       {/* error message */}
