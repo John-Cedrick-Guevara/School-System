@@ -24,6 +24,10 @@ import { usePathname } from "next/navigation";
 import SectionForm from "@/app/_Components/SectionForm";
 import { string } from "zod";
 import { Button } from "@/components/ui/button";
+import {
+  createSectionSchema,
+  editSectionSchema,
+} from "@/lib/schemas/schemaParser";
 
 const fetcher = (url: string) =>
   axios.get(url).then((res) => res.data.sections);
@@ -36,6 +40,7 @@ interface Section {
 
 const Page = () => {
   const [isAddingSection, setIsAddingSection] = useState(false);
+  const [formError, setFormError] = useState("");
   const [addSectionCredentials, setAddSectionCredentials] = useState<Section>({
     name: "",
     id: "",
@@ -55,40 +60,67 @@ const Page = () => {
     mutate,
   } = useSWR<Section[]>("/api/sections", fetcher);
 
+  // submit edited section
   async function handleSubmitEditSection(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    const parsedSectionCredentials = editSectionSchema.safeParse(
+      editSectionCredentials
+    );
+
     try {
-      const res = await axios.put("/api/sections", editSectionCredentials);
-      mutate();
+      if (parsedSectionCredentials.success) {
+        const res = await axios.put(
+          "/api/sections",
+          parsedSectionCredentials.data
+        );
+        mutate();
+        setIsEditingSection(false);
+      } else {
+        setFormError(parsedSectionCredentials.error.errors[0].message);
+      }
     } catch (error) {
       console.log(error);
     }
-    setIsEditingSection(false);
   }
 
+  // gets the current info of seciton to be edited
   function handleEditSection(item: Section) {
     setIsEditingSection((prev) => !prev);
-    console.log(item);
     setEditSectionCredentials({
       name: item.name,
-      id: item.id,
+      id: item.name,
       newId: item.id,
     });
+
+    console.log(item, editSectionCredentials);
   }
 
+  //handles creation of section
   async function handleCreateSection(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    const parsedSectionCredentials = createSectionSchema.safeParse(
+      addSectionCredentials
+    );
+
     try {
-      const res = await axios.post("/api/sections", addSectionCredentials);
-      mutate();
+      if (parsedSectionCredentials.success) {
+        const res = await axios.post(
+          "/api/sections",
+          parsedSectionCredentials.data
+        );
+        mutate();
+        setIsAddingSection(false);
+      } else {
+        setFormError(parsedSectionCredentials.error.errors[0].message);
+      }
     } catch (error) {
       console.log(error);
     }
-    setIsAddingSection(false);
   }
 
+  // handle delete scetion
   async function handleDeleteSection(item: Section) {
-    console.log(item)
+    console.log(item);
     try {
       const res = await axios.delete("/api/sections", {
         data: item,
@@ -98,6 +130,10 @@ const Page = () => {
       console.log(error);
     }
   }
+
+  setTimeout(() => {
+    setFormError("");
+  }, 3000);
   const path = usePathname();
 
   if (error) return <p>Error fetching data...</p>;
@@ -173,6 +209,12 @@ const Page = () => {
           <h1 className="text-xl font-semibold mb-3 text-center">
             Add Section
           </h1>
+          {/* error message */}
+          {formError && (
+            <h1 className="bg-red-500 p-2 rounded-md text-white text-center mb-4">
+              {formError}
+            </h1>
+          )}
           <SectionForm
             data={addSectionCredentials}
             setData={setAddSectionCredentials}
@@ -200,6 +242,12 @@ const Page = () => {
           <h1 className="text-xl font-semibold mb-3 text-center">
             Edit Section
           </h1>
+          {/* error message */}
+          {formError && (
+            <h1 className="bg-red-500 p-2 rounded-md text-white text-center mb-4">
+              {formError}
+            </h1>
+          )}
           <SectionForm
             data={editSectionCredentials}
             setData={setEditSectionCredentials}

@@ -10,12 +10,12 @@ export async function getSections() {
   }
 }
 
-export async function createSection(data: { name: string; id: string }) {
+export async function createSection(data: { name: string; newId: string }) {
   try {
     const res = await prisma.section.create({
       data: {
         name: data.name,
-        id: data.id,
+        id: data.newId,
       },
     });
     return res;

@@ -16,6 +16,8 @@ interface Props {
 }
 
 const SectionForm = ({ buttonName, data, setData, handleSubmit }: Props) => {
+
+  //handle input 
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) {
@@ -25,8 +27,8 @@ const SectionForm = ({ buttonName, data, setData, handleSubmit }: Props) => {
       newId: e.target.name === "name" ? e.target.value : prev.id,
     }));
 
-    console.log(data);
   }
+  
   return (
     <div className="flex flex-col gap-5 w-full max-w-md mx-auto bg-secondary p-5">
       <form

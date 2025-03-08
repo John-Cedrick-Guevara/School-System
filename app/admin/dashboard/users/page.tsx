@@ -23,6 +23,7 @@ import { url } from "inspector";
 import useSWR from "swr";
 import { usePathname } from "next/navigation";
 import BackButton from "@/app/_Components/BackButton";
+import { editUserSchema, signUpSchema } from "@/lib/schemas/schemaParser";
 const fetcher = (url: string) => axios.get(url).then((res) => res.data.users);
 
 interface User {
@@ -44,6 +45,7 @@ const usersPage = () => {
     mutate,
   } = useSWR<User[]>("/api/students", fetcher);
   const [editUser, setEditUser] = useState<boolean>(false);
+  const [formError, setFormError] = useState<String>("");
   const [userData, setUserData] = useState<User>({
     action: "edit data",
     email: "",
@@ -57,14 +59,19 @@ const usersPage = () => {
   async function handleSubmitEditedUser(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
+    const parsedData = signUpSchema.safeParse(userData);
+
     try {
-      const res = await axios.put("/api/students", userData);
-      mutate(); // Re-fetch data after successful update
-      console.log(res.data);
+      if (parsedData.success) {
+        const res = await axios.put("/api/students", userData);
+        mutate(); // Re-fetch data after successful update
+        setEditUser((prev) => !prev);
+      } else {
+        setFormError(parsedData.error.errors[0].message);
+      }
     } catch (error) {
       console.log(error);
     }
-    setEditUser((prev) => !prev);
   }
 
   async function handleDelete(data: User) {
@@ -83,6 +90,10 @@ const usersPage = () => {
       action: prev.action ?? "edit data", // Ensure action is always present
     }));
   }
+
+  setTimeout(() => {
+    setFormError("");
+  }, 3000);
 
   if (error) return <p>Error Fethich data......</p>;
   if (!allUsers) return <p>Fethich data......</p>;
@@ -150,6 +161,13 @@ const usersPage = () => {
             Cancel
           </Button>
           <h1 className="text-xl font-semibold mb-3 text-center">Edit User</h1>
+
+          {/* error message */}
+          {formError && (
+            <h1 className="bg-red-500 p-2 rounded-md text-white text-center mb-4">
+              {formError}
+            </h1>
+          )}
           <CreateUserComponent
             buttonName="Save"
             setData={setUserData}

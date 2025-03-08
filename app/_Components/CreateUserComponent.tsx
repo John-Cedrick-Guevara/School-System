@@ -12,7 +12,8 @@ import {
   DropdownMenuRadioItem,
 } from "@radix-ui/react-dropdown-menu";
 import { Label } from "@radix-ui/react-label";
-import React, { Dispatch, SetStateAction, useState } from "react";
+import axios from "axios";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 interface User {
   action: string;
@@ -31,32 +32,15 @@ interface Props {
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
 }
 
+interface section {
+  name: string;
+  id: string
+}
+
 const CreateUserComponent = ({ data, setData, handleSubmit,buttonName }: Props) => {
   const [role, setRole] = useState<"STUDENT" | "TEACHER" | "ADMIN">("STUDENT");
   const [section, setsection] = useState("");
-
-  const sections = [
-    {
-      value: "SECTION 1",
-      label: "SECTION 1",
-    },
-    {
-      value: "SECTION 2",
-      label: "SECTION 2",
-    },
-    {
-      value: "SECTION 3",
-      label: "SECTION 3",
-    },
-    {
-      value: "SECTION 4",
-      label: "SECTION 4",
-    },
-    {
-      value: "SECTION 5",
-      label: "SECTION 5",
-    },
-  ];
+  const [allsection, setAllSection] = useState<section[]>([]);
 
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -66,6 +50,19 @@ const CreateUserComponent = ({ data, setData, handleSubmit,buttonName }: Props) 
       [e.target.name]: e.target.value,
     });
   }
+
+  useEffect(() => {
+    async function getSections() {
+      try {
+        const res = await axios.get("/api/sections");
+        setAllSection(res.data.sections)
+        console.log(allsection)
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getSections()
+  }, []);
 
   return (
     <div>
@@ -120,10 +117,10 @@ const CreateUserComponent = ({ data, setData, handleSubmit,buttonName }: Props) 
                   }));
                 }}
               >
-                {sections.map((item, key) => {
+                {allsection.map((item, key) => {
                   return (
-                    <DropdownMenuRadioItem className="hover:bg-secondary p-1 rounded-sm cursor-pointer" key={key} value={item.value}>
-                      {item.label}
+                    <DropdownMenuRadioItem className="hover:bg-secondary p-1 rounded-sm cursor-pointer" key={key} value={item.id}>
+                      {item.name}
                     </DropdownMenuRadioItem>
                   );
                 })}

@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
-import React, { use, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { Switch } from "@/components/ui/switch";
 import axios from "axios";
 
@@ -23,11 +23,11 @@ import { signUpSchema } from "@/lib/schemas/schemaParser";
 import CreateUserComponent from "../_Components/CreateUserComponent";
 import BackButton from "../_Components/BackButton";
 import { usePathname } from "next/navigation";
-
-
+import { useRouter } from "next/navigation";
 
 const signUp_page = () => {
- 
+  const router = useRouter();
+
   const [error, setError] = useState("");
   const [data, setData] = useState({
     action: "signup",
@@ -39,12 +39,11 @@ const signUp_page = () => {
     role: "STUDENT",
   });
 
-
-
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+
     const parsedData = signUpSchema.safeParse(data);
-    console.log(parsedData.data)
+
     if (!parsedData.success) {
       setError(parsedData.error.errors[0].message as unknown as string);
     } else {
@@ -58,15 +57,16 @@ const signUp_page = () => {
       } catch (error) {
         console.log(error);
       }
-      // setData({
-      //   action: "signup",
-      //   name: "",
-      //   email: "",
-      //   password: "",
-      //   sectionId: "" ,
-      //   id: "",
-      //   role: "STUDENT",
-      // });
+      setData({
+        action: "signup",
+        name: "",
+        email: "",
+        password: "",
+        sectionId: "",
+        id: "",
+        role: "STUDENT",
+      });
+      router.push("/sign_in");
     }
   }
 
@@ -74,13 +74,13 @@ const signUp_page = () => {
     setError("");
   }, 3000);
 
-
+  
 
   return (
     <main className="p-8 ">
       {/* back button */}
-      <BackButton path={usePathname()}/>
-      
+      <BackButton path={usePathname()} />
+
       <h1 className="text-4xl font-bold my-16 text-center">Sign Up</h1>
 
       {/* error message */}
@@ -92,7 +92,12 @@ const signUp_page = () => {
 
       {/* form */}
 
-      <CreateUserComponent buttonName="Sign Up" handleSubmit={handleSubmit} data={data} setData={setData}/>
+      <CreateUserComponent
+        buttonName="Sign Up"
+        handleSubmit={handleSubmit}
+        data={data}
+        setData={setData}
+      />
     </main>
   );
 };
