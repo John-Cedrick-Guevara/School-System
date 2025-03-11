@@ -19,12 +19,28 @@ import {
 import axios from "axios";
 import CreateUserComponent from "@/app/_Components/CreateUserComponent";
 import { Button } from "@/components/ui/button";
-import { url } from "inspector";
-import useSWR from "swr";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
+import useSWR, { mutate } from "swr";
 import { usePathname } from "next/navigation";
 import BackButton from "@/app/_Components/BackButton";
 import { editUserSchema, signUpSchema } from "@/lib/schemas/schemaParser";
-const fetcher = (url: string) => axios.get(url).then((res) => res.data.users);
+import { cn } from "@/lib/utils";
+import { ChevronsUpDown, Check } from "lucide-react";
+const userFetcher = (url: string) =>
+  axios.get(url).then((res) => res.data.users);
+
+const sectionFetcher = (url: string) =>
+  axios.get(url).then((res) => res.data.sections);
 
 interface User {
   action: string;
@@ -35,15 +51,31 @@ interface User {
   role: string;
   sectionId: string;
 }
+interface Section {
+  name: string;
+  id: string;
+  newId?: string;
+}
 
+// main
 const usersPage = () => {
   const path = usePathname();
 
+  const [section, setSection] = React.useState("");
+  const [role, setRole] = React.useState("");
+
+  const {
+    data: allSections,
+    error: sectionError,
+    mutate: mutateSections,
+  } = useSWR<Section[]>("/api/sections", sectionFetcher);
+
   const {
     data: allUsers,
-    error,
-    mutate,
-  } = useSWR<User[]>("/api/students", fetcher);
+    error: userError,
+    mutate: mutateUsers,
+  } = useSWR<User[]>("/api/students", userFetcher);
+
   const [editUser, setEditUser] = useState<boolean>(false);
   const [formError, setFormError] = useState<String>("");
   const [userData, setUserData] = useState<User>({
@@ -64,7 +96,7 @@ const usersPage = () => {
     try {
       if (parsedData.success) {
         const res = await axios.put("/api/students", userData);
-        mutate(); // Re-fetch data after successful update
+        mutateUsers(); // Re-fetch data after successful update
         setEditUser((prev) => !prev);
       } else {
         setFormError(parsedData.error.errors[0].message);
@@ -77,7 +109,7 @@ const usersPage = () => {
   async function handleDelete(data: User) {
     try {
       const res = await axios.delete("/api/students", { data: data });
-      mutate();
+      mutateUsers();
     } catch (error) {
       console.log(error);
     }
@@ -95,12 +127,63 @@ const usersPage = () => {
     setFormError("");
   }, 3000);
 
-  if (error) return <p>Error Fethich data......</p>;
+  if (userError) return <p>Error Fethich data......</p>;
   if (!allUsers) return <p>Fethich data......</p>;
 
   return (
     <div className="mt-10 z-10 ">
       <BackButton path={path} />
+
+      {/* commands */}
+      <div className="flex my-10 gap-10">
+        {/* filter by sections */}
+        <div className="">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline">Filter by sections: </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+              <DropdownMenuLabel>Sections</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuRadioGroup
+                value={section}
+                onValueChange={setSection}
+              >
+                <DropdownMenuRadioItem value="">All</DropdownMenuRadioItem>
+                {allSections?.map((item) => {
+                  return (
+                    <DropdownMenuRadioItem value={item.name} key={item.id}>
+                      {item.name}
+                    </DropdownMenuRadioItem>
+                  );
+                })}
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+
+        {/* filter by role */}
+        <div className="">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline">Filter by role: </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+              <DropdownMenuLabel>Sections</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuRadioGroup value={role} onValueChange={setRole}>
+                <DropdownMenuRadioItem value="">All</DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="TEACHER">
+                  TEACHER
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="STUDENT">
+                  STUDENT
+                </DropdownMenuRadioItem>
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </div>
       <Table>
         <TableCaption>Users:</TableCaption>
         <TableHeader>
@@ -114,36 +197,39 @@ const usersPage = () => {
         </TableHeader>
 
         <TableBody>
-          {allUsers?.map((item, index) => {
-            return (
-              <TableRow key={index}>
-                <TableCell>{item.id}</TableCell>
-                <TableCell>{item.name}</TableCell>
-                <TableCell>{item.email}</TableCell>
-                <TableCell>{item.sectionId}</TableCell>
-                <TableCell>{item.role}</TableCell>
-                <TableCell>
-                  <Popover>
-                    <PopoverTrigger>...</PopoverTrigger>
-                    <PopoverContent className="flex flex-col gap-1 z-20">
-                      <h1
-                        onClick={() => handleEditUser(item)}
-                        className="hover:text-white hover:bg-slate-700 py-1 px-2 rounded-md transition-all cursor-pointer"
-                      >
-                        Edit
-                      </h1>
-                      <h1
-                        onClick={() => handleDelete(item)}
-                        className="hover:text-white hover:bg-red-500 py-1 px-2 rounded-md transition-all cursor-pointer"
-                      >
-                        Delete
-                      </h1>
-                    </PopoverContent>
-                  </Popover>
-                </TableCell>
-              </TableRow>
-            );
-          })}
+          {allUsers
+            ?.filter((item) => (!section ? item : section === item.sectionId))
+            .filter((item) => (!role ? item : role === item.role))
+            .map((item, index) => {
+              return (
+                <TableRow key={index}>
+                  <TableCell>{item.id}</TableCell>
+                  <TableCell>{item.name}</TableCell>
+                  <TableCell>{item.email}</TableCell>
+                  <TableCell>{item.sectionId}</TableCell>
+                  <TableCell>{item.role}</TableCell>
+                  <TableCell>
+                    <Popover>
+                      <PopoverTrigger>...</PopoverTrigger>
+                      <PopoverContent className="flex flex-col gap-1 z-20">
+                        <h1
+                          onClick={() => handleEditUser(item)}
+                          className="hover:text-white hover:bg-slate-700 py-1 px-2 rounded-md transition-all cursor-pointer"
+                        >
+                          Edit
+                        </h1>
+                        <h1
+                          onClick={() => handleDelete(item)}
+                          className="hover:text-white hover:bg-red-500 py-1 px-2 rounded-md transition-all cursor-pointer"
+                        >
+                          Delete
+                        </h1>
+                      </PopoverContent>
+                    </Popover>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
         </TableBody>
       </Table>
 

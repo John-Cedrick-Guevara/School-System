@@ -31,6 +31,17 @@ export const createSectionSchema = z.object({
   name: z.string().nonempty("Section name cannot be null."),
 });
 
+export const createSSubjectSchema = z.object({
+  newId:z.string().nonempty("Section id cannot be null."),
+  name: z.string().nonempty("Section name cannot be null."),
+});
+
+export const editSubjectSchema = z.object({
+  name: z.string().nonempty("Section name cannot be null."),
+  id:z.string().min(0),
+  newId:z.string().nonempty("Section id cannot be null."),
+});
+
 export const editSectionSchema = z.object({
   name: z.string().nonempty("Section name cannot be null."),
   id:z.string().min(0),

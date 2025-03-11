@@ -1,6 +1,9 @@
 "use client";
+import BackButton from "@/app/_Components/BackButton";
+import SubjectForm from "@/app/_Components/SubjectForm";
+import { Button } from "@/components/ui/button";
 import {
-  Table as UITable,
+  Table as UTable,
   TableHeader,
   TableRow,
   TableHead,
@@ -9,45 +12,37 @@ import {
   TableCaption,
 } from "@/components/ui/table";
 import {
+  createSSubjectSchema,
+  editSubjectSchema,
+} from "@/lib/schemas/schemaParser";
+import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-} from "@/components/ui/popover"; 
-
+} from "@/components/ui/popover";
 import axios from "axios";
-import { Section, Table as TableIcon } from "lucide-react"; // Renamed import
-
+import { usePathname } from "next/navigation";
 import React, { useState } from "react";
 import useSWR from "swr";
-import BackButton from "@/app/_Components/BackButton";
-import { usePathname } from "next/navigation";
-import SectionForm from "@/app/_Components/SectionForm";
-import { string } from "zod";
-import { Button } from "@/components/ui/button";
-import {
-  createSectionSchema,
-  editSectionSchema,
-} from "@/lib/schemas/schemaParser";
 
-const fetcher = (url: string) =>
-  axios.get(url).then((res) => res.data.sections);
-
-interface Section {
+interface Subject {
   name: string;
   id: string;
   newId?: string;
 }
+const fetcher = (url: string) =>
+  axios.get(url).then((res) => res.data.subjects);
 
-const Page = () => {
-  const [isAddingSection, setIsAddingSection] = useState(false);
+const page = () => {
+  const [editingSubject, setEditingSubject] = useState(false);
   const [formError, setFormError] = useState("");
-  const [addSectionCredentials, setAddSectionCredentials] = useState<Section>({
+  const [addSubjectCredentials, setAddSubjectCredentials] = useState<Subject>({
     name: "",
     id: "",
   });
-  const [isEditingSection, setIsEditingSection] = useState(false);
+  const [isAddingSubject, setIsAddingSubject] = useState(false);
 
-  const [editSectionCredentials, setEditSectionCredentials] = useState<Section>(
+  const [editSubjectCredentials, setEditSubjectCredentials] = useState<Subject>(
     {
       name: "",
       id: "",
@@ -55,28 +50,28 @@ const Page = () => {
     }
   );
   const {
-    data: allSections,
+    data: allSubjects,
     error,
     mutate,
-  } = useSWR<Section[]>("/api/sections", fetcher);
+  } = useSWR<Subject[]>("/api/subjects", fetcher);
 
   // submit edited section
   async function handleSubmitEditSection(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const parsedSectionCredentials = editSectionSchema.safeParse(
-      editSectionCredentials
+    const parsedSubjectCredentials = editSubjectSchema.safeParse(
+      editSubjectCredentials
     );
-
+    console.log(parsedSubjectCredentials.data);
     try {
-      if (parsedSectionCredentials.success) {
+      if (parsedSubjectCredentials.success) {
         const res = await axios.put(
-          "/api/sections",
-          parsedSectionCredentials.data
+          "/api/subjects",
+          parsedSubjectCredentials.data
         );
         mutate();
-        setIsEditingSection(false);
+        setEditingSubject(false);
       } else {
-        setFormError(parsedSectionCredentials.error.errors[0].message);
+        setFormError(parsedSubjectCredentials.error.errors[0].message);
       }
     } catch (error) {
       console.log(error);
@@ -84,34 +79,34 @@ const Page = () => {
   }
 
   // gets the current info of seciton to be edited
-  function handleEditSection(item: Section) {
-    setIsEditingSection((prev) => !prev);
-    setEditSectionCredentials({
+  function handleEditSection(item: Subject) {
+    setEditingSubject((prev) => !prev);
+    setEditSubjectCredentials({
       name: item.name,
       id: item.name,
       newId: item.id,
     });
 
-    console.log(item, editSectionCredentials);
+    console.log(item, editSubjectCredentials);
   }
 
   //handles creation of section
-  async function handleCreateSection(e: React.FormEvent<HTMLFormElement>) {
+  async function handleCreateSubject(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const parsedSectionCredentials = createSectionSchema.safeParse(
-      addSectionCredentials
+    const parsedSubjectCredentials = createSSubjectSchema.safeParse(
+      addSubjectCredentials
     );
 
     try {
-      if (parsedSectionCredentials.success) {
+      if (parsedSubjectCredentials.success) {
         const res = await axios.post(
-          "/api/sections",
-          parsedSectionCredentials.data
+          "/api/subjects",
+          parsedSubjectCredentials.data
         );
         mutate();
-        setIsAddingSection(false);
+        setEditingSubject(false);
       } else {
-        setFormError(parsedSectionCredentials.error.errors[0].message);
+        setFormError(parsedSubjectCredentials.error.errors[0].message);
       }
     } catch (error) {
       console.log(error);
@@ -119,10 +114,10 @@ const Page = () => {
   }
 
   // handle delete scetion
-  async function handleDeleteSection(item: Section) {
+  async function handleDeleteSection(item: Subject) {
     console.log(item);
     try {
-      const res = await axios.delete("/api/sections", {
+      const res = await axios.delete("/api/subjects", {
         data: item,
       });
       mutate();
@@ -134,17 +129,18 @@ const Page = () => {
   setTimeout(() => {
     setFormError("");
   }, 3000);
+
   const path = usePathname();
 
   if (error) return <p>Error fetching data...</p>;
-  if (!allSections) return <p>Fetching data...</p>;
+  if (!allSubjects) return <p>Fetching data...</p>;
 
   return (
     <div className="mt-10 z-10 ">
       <BackButton path={path} />
 
-      {/* tables */}
-      <UITable className="mt-10">
+      {/* table */}
+      <UTable className="mt-10">
         <TableCaption>Sections:</TableCaption>
 
         <TableHeader>
@@ -156,7 +152,7 @@ const Page = () => {
         </TableHeader>
 
         <TableBody>
-          {allSections?.map((item) => (
+          {allSubjects?.map((item) => (
             <TableRow key={item.id}>
               <TableCell>{item.id}</TableCell>
               <TableCell>{item.name}</TableCell>
@@ -182,34 +178,33 @@ const Page = () => {
             </TableRow>
           ))}
         </TableBody>
-      </UITable>
-
+      </UTable>
       {/* add section icon*/}
       <div>
         <img
           src="/add-icon.svg"
           className="w-12 absolute bottom-10 transition-all hover:scale-105 cursor-pointer"
           alt=""
-          onClick={() => setIsAddingSection((prev) => !prev)}
+          onClick={() => setEditingSubject((prev) => !prev)}
         />
       </div>
 
       {/* add section form */}
       <div
         className={`w-full  h-screen absolute top-0 right-0 flex items-center justify-center mx-auto transition-all scale-0 z-30 ${
-          isAddingSection && "scale-100 bg-secondary bg-slate-300 bg-opacity-40"
+          isAddingSubject && "scale-100 bg-secondary bg-slate-300 bg-opacity-40"
         }`}
       >
         <div className="bg-secondary w-full max-w-md p-5 rounded-lg">
           <Button
-            onClick={() => setIsAddingSection((prev) => !prev)}
+            onClick={() => setEditingSubject((prev) => !prev)}
             variant={"outline"}
           >
             <img src="/arrow.png" alt="" width={15} className=" rotate-180" />
             Cancel
           </Button>
           <h1 className="text-xl font-semibold mb-3 text-center">
-            Add Section
+            Add Subject
           </h1>
           {/* error message */}
           {formError && (
@@ -217,11 +212,11 @@ const Page = () => {
               {formError}
             </h1>
           )}
-          <SectionForm
-            data={addSectionCredentials}
-            setData={setAddSectionCredentials}
+          <SubjectForm
+            data={addSubjectCredentials}
+            setData={setAddSubjectCredentials}
             buttonName="Add"
-            handleSubmit={handleCreateSection}
+            handleSubmit={handleCreateSubject}
           />
         </div>
       </div>
@@ -229,20 +224,19 @@ const Page = () => {
       {/* edit section form */}
       <div
         className={`w-full  h-screen absolute top-0 right-0 flex items-center justify-center mx-auto transition-all scale-0 z-30 ${
-          isEditingSection &&
-          "scale-100 bg-secondary bg-slate-300 bg-opacity-40"
+          editingSubject && "scale-100 bg-secondary bg-slate-300 bg-opacity-40"
         }`}
       >
         <div className="bg-secondary w-full max-w-md p-5 rounded-lg">
           <Button
-            onClick={() => setIsEditingSection((prev) => !prev)}
+            onClick={() => setIsAddingSubject((prev) => !prev)}
             variant={"outline"}
           >
             <img src="/arrow.png" alt="" width={15} className=" rotate-180" />
             Cancel
           </Button>
           <h1 className="text-xl font-semibold mb-3 text-center">
-            Edit Section
+            Edit Subject
           </h1>
           {/* error message */}
           {formError && (
@@ -250,9 +244,9 @@ const Page = () => {
               {formError}
             </h1>
           )}
-          <SectionForm
-            data={editSectionCredentials}
-            setData={setEditSectionCredentials}
+          <SubjectForm
+            data={editSubjectCredentials}
+            setData={setEditSubjectCredentials}
             buttonName="Save"
             handleSubmit={handleSubmitEditSection}
           />
@@ -262,4 +256,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default page;

@@ -11,7 +11,7 @@ const BackButton = ({ path }: { path: string }) => {
           : path.split("/").slice(0, -1).join("/")
       }
     >
-      <Button className="mb-10" variant={"outline"}>
+      <Button className="" variant={"outline"}>
         <img className=" rotate-180 w-6" src="/arrow.png" alt="as" />
         <h1>Back</h1>
       </Button>

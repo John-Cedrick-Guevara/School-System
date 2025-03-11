@@ -49,7 +49,6 @@ export async function deleteSection(data: {
   id: string;
   newId: string;
 }) {
-    console.log("first")
   try {
     const res = await prisma.section.delete({
       where: {
