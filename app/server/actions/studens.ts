@@ -69,7 +69,7 @@ export async function logInUser(email: string, password: string) {
       return { message: "Invalid Password", success: false };
     }
 
-    // ✅ Generate JWT
+    // Generate JWT
     const token = jwt.sign(
       { userData: user, role: user.role },
       process.env.JWT_SECRET!,
@@ -79,11 +79,11 @@ export async function logInUser(email: string, password: string) {
     );
 
     (
-      await // ✅ Store token in HTTP-only cookies
+      await // Store token in HTTP-only cookies
       cookies()
     ).set("token", token, { httpOnly: true });
 
-    // ✅ Return only necessary data
+    // Return only necessary data
     return { token, user };
   } catch (error) {
     NextResponse.json({ error: "Internal server error" }, { status: 500 });
@@ -130,3 +130,4 @@ export async function deleteUser(email: string) {
     return error;
   }
 }
+

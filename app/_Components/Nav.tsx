@@ -2,6 +2,8 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 interface NavLink {
   name: string;
@@ -15,6 +17,17 @@ interface Props {
 
 const Nav = ({ navLinks, showLogOut }: Props) => {
   const [showNav, setShowNav] = useState<Boolean>(false);
+  const router = useRouter()
+
+
+  async function handleLogOut() {
+      try {
+        await axios.post("/api/students/logout")
+        router.push("/")
+      } catch (error) {
+        console.log(error)
+      }
+  }
 
   return (
     <nav className=" py-5 dark:bg-wh px-8 sticky top-0 bg-white z-10">
@@ -52,9 +65,14 @@ const Nav = ({ navLinks, showLogOut }: Props) => {
           {/* buttons */}
           <div className="flex max-md:flex-col md:items-center justify-center gap-4">
             {showLogOut ? (
-              <Button className="w-full " variant={"secondary"}>
+              <>
+              <Button onClick={handleLogOut} className="w-full " variant={"secondary"}>
+                Edit Credentials
+              </Button>
+              <Button onClick={handleLogOut} className="w-full " variant={"secondary"}>
                 Log Out
               </Button>
+              </>
             ) : (
               <>
                 <Link href={"/sign_in"}>

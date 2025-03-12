@@ -24,7 +24,6 @@ function TeacherDashboardContent() {
     }
   },[user])
   
-  console.log("here", user);
   
   return (
     <main>

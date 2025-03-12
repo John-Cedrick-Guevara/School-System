@@ -1,6 +1,7 @@
 import { deleteUser, getUsers, updateUser } from "@/app/server/actions/studens";
 import prisma from "@/lib/prisma";
 import { error } from "console";
+import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET() {
@@ -37,3 +38,5 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ error: error }, { status: 500 });
   }
 }
+
+
