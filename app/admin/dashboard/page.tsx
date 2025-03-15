@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/accordion";
 import Link from "next/link";
 
-
 function AdminpageContent() {
   const router = useRouter();
   const user = useUser();
@@ -27,22 +26,9 @@ function AdminpageContent() {
 
   return (
     <main className="p-10">
-
-      <div className="mt-10 flex flex-wrap gap-3">
-        {tables.map((item) => {
-          return (
-            <Link
-              key={item}
-              href={`dashboard/${item}`}
-              className="bg-secondary w-full max-w-sm rounded-lg cursor-pointer hover:scale-105 transition-all"
-            >
-              <h1 className="text-xl font-semibold p-10 capitalize">{item}</h1>
-            </Link>
-          );
-        })}
-      </div>
+      <h1>admin p</h1>
     </main>
   );
 }
 
-export default AdminpageContent
+export default AdminpageContent;

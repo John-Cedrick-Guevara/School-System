@@ -2,6 +2,8 @@ import Nav from "@/app/_Components/Nav";
 import ProtectedRoute from "@/app/_Components/ProtectedRoute";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/app-sidebar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,16 +25,34 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const navLinks = [
+    {
+      name: "View Users",
+      url: "/admin/dashboard/users",
+    },
+    {
+      name: "View Sections",
+      url: "/admin/dashboard/sections",
+    },
+    {
+      name: "View Subjects",
+      url: "/admin/dashboard/subjects",
+    },
+  ];
+
   return (
     <html lang="en" className="scroll-smooth">
       <body
         className={` ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ProtectedRoute role="ADMIN">
-          <main className="p-12">
-            <h1 className="text-2xl font-bold">Admin Page</h1>
-            {children}
-          </main>
+          <SidebarProvider>
+            <AppSidebar item={navLinks} />
+            <main className="p-12 w-full">
+              <SidebarTrigger />
+              {children}
+            </main>
+          </SidebarProvider>
         </ProtectedRoute>
       </body>
     </html>

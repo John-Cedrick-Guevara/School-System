@@ -17,16 +17,15 @@ interface Props {
 
 const Nav = ({ navLinks, showLogOut }: Props) => {
   const [showNav, setShowNav] = useState<Boolean>(false);
-  const router = useRouter()
-
+  const router = useRouter();
 
   async function handleLogOut() {
-      try {
-        await axios.post("/api/students/logout")
-        router.push("/")
-      } catch (error) {
-        console.log(error)
-      }
+    try {
+      await axios.post("/api/students/logout");
+      router.push("/");
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
@@ -66,12 +65,20 @@ const Nav = ({ navLinks, showLogOut }: Props) => {
           <div className="flex max-md:flex-col md:items-center justify-center gap-4">
             {showLogOut ? (
               <>
-              <Button onClick={handleLogOut} className="w-full " variant={"secondary"}>
-                Edit Credentials
-              </Button>
-              <Button onClick={handleLogOut} className="w-full " variant={"secondary"}>
-                Log Out
-              </Button>
+                <Button
+                  onClick={handleLogOut}
+                  className="w-full "
+                  variant={"outline"}
+                >
+                  Edit Credentials
+                </Button>
+                <Button
+                  onClick={handleLogOut}
+                  className="w-full "
+                  variant={"secondary"}
+                >
+                  Log Out
+                </Button>
               </>
             ) : (
               <>
@@ -90,6 +97,8 @@ const Nav = ({ navLinks, showLogOut }: Props) => {
           </div>
         </div>
       </div>
+
+
     </nav>
   );
 };

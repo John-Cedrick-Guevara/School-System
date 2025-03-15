@@ -104,7 +104,11 @@ const page = () => {
           parsedSubjectCredentials.data
         );
         mutate();
-        setEditingSubject(false);
+        setIsAddingSubject(false);
+        setAddSubjectCredentials({
+          id:"",
+          name:""
+        })
       } else {
         setFormError(parsedSubjectCredentials.error.errors[0].message);
       }
@@ -179,13 +183,14 @@ const page = () => {
           ))}
         </TableBody>
       </UTable>
+
       {/* add section icon*/}
       <div>
         <img
           src="/add-icon.svg"
           className="w-12 absolute bottom-10 transition-all hover:scale-105 cursor-pointer"
           alt=""
-          onClick={() => setEditingSubject((prev) => !prev)}
+          onClick={() => setIsAddingSubject((prev) => !prev)}
         />
       </div>
 
@@ -197,7 +202,7 @@ const page = () => {
       >
         <div className="bg-secondary w-full max-w-md p-5 rounded-lg">
           <Button
-            onClick={() => setEditingSubject((prev) => !prev)}
+            onClick={() => setIsAddingSubject((prev) => !prev)}
             variant={"outline"}
           >
             <img src="/arrow.png" alt="" width={15} className=" rotate-180" />
@@ -229,7 +234,7 @@ const page = () => {
       >
         <div className="bg-secondary w-full max-w-md p-5 rounded-lg">
           <Button
-            onClick={() => setIsAddingSubject((prev) => !prev)}
+            onClick={() => setEditingSubject((prev) => !prev)}
             variant={"outline"}
           >
             <img src="/arrow.png" alt="" width={15} className=" rotate-180" />

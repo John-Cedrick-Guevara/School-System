@@ -14,7 +14,7 @@ export default function TeacherDashboard() {
 
 // ✅ New component that consumes `useUser`
 function TeacherDashboardContent() {
-  const router = useRouter()
+  const router = useRouter();
   const user = useUser();
 
   useEffect(() => {
@@ -22,17 +22,14 @@ function TeacherDashboardContent() {
       console.log(user?.role);
       router.push("/sign_in");
     }
-  },[user])
-  
-  
+  }, [user]);
+
   return (
     <main>
-      <h1>Welcome to the Teacher Dashboard</h1>
-      <h1>{user?.email}</h1>
-      <h1>{user?.name}</h1>
-      <h1>{user?.id}</h1>
-      <h1>{user?.sectionId}</h1>
-      <h1>{user?.role}</h1>
+      <div className="flex justify-between items-center">
+        <h1 className="font-bold text-2xl">Welcome to the Teacher Dashboard</h1>
+        <h1>{user?.name} - {user?.id}</h1>
+      </div>
     </main>
   );
 }

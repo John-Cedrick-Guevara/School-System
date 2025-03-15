@@ -110,6 +110,10 @@ const Page = () => {
         );
         mutate();
         setIsAddingSection(false);
+        setAddSectionCredentials({
+          id:"",
+          name:""
+        })
       } else {
         setFormError(parsedSectionCredentials.error.errors[0].message);
       }
@@ -190,7 +194,7 @@ const Page = () => {
           src="/add-icon.svg"
           className="w-12 absolute bottom-10 transition-all hover:scale-105 cursor-pointer"
           alt=""
-          onClick={() => setIsAddingSection((prev) => !prev)}
+          onClick={() => setIsAddingSection(true)}
         />
       </div>
 
@@ -202,7 +206,7 @@ const Page = () => {
       >
         <div className="bg-secondary w-full max-w-md p-5 rounded-lg">
           <Button
-            onClick={() => setIsAddingSection((prev) => !prev)}
+            onClick={() => setIsAddingSection(false)}
             variant={"outline"}
           >
             <img src="/arrow.png" alt="" width={15} className=" rotate-180" />
@@ -235,7 +239,7 @@ const Page = () => {
       >
         <div className="bg-secondary w-full max-w-md p-5 rounded-lg">
           <Button
-            onClick={() => setIsEditingSection((prev) => !prev)}
+            onClick={() => setIsEditingSection(false)}
             variant={"outline"}
           >
             <img src="/arrow.png" alt="" width={15} className=" rotate-180" />

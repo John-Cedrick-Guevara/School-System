@@ -36,6 +36,8 @@ import BackButton from "@/app/_Components/BackButton";
 import { editUserSchema, signUpSchema } from "@/lib/schemas/schemaParser";
 import { cn } from "@/lib/utils";
 import { ChevronsUpDown, Check } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 const userFetcher = (url: string) =>
   axios.get(url).then((res) => res.data.users);
 
@@ -62,6 +64,7 @@ const usersPage = () => {
   const path = usePathname();
 
   const [section, setSection] = React.useState("");
+  const [searchId, setSearchId] = React.useState("");
   const [role, setRole] = React.useState("");
 
   const {
@@ -183,7 +186,22 @@ const usersPage = () => {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
+
+        {/* search for id */}
+        <div className="flex items-center justify-start gap-1 w-fit">
+        <Label htmlFor="searchId" className="w-72">Search ID: </Label>
+          <Input
+            name="searchId"
+            value={searchId}
+            onChange={(e) => setSearchId(e.target.value)}
+            type="text"
+            id="id"
+            placeholder="Enter ID to find"
+          />
+        </div>
       </div>
+
+      {/* table of users */}
       <Table>
         <TableCaption>Users:</TableCaption>
         <TableHeader>
@@ -198,7 +216,8 @@ const usersPage = () => {
 
         <TableBody>
           {allUsers
-            ?.filter((item) => (!section ? item : section === item.sectionId))
+            ?.filter((item) => (!searchId ? item : item.id.includes(searchId)))
+            .filter((item) => (!section ? item : section === item.sectionId))
             .filter((item) => (!role ? item : role === item.role))
             .map((item, index) => {
               return (

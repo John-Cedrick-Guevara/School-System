@@ -1,5 +1,7 @@
 import Nav from "@/app/_Components/Nav";
 import ProtectedRoute from "@/app/_Components/ProtectedRoute";
+import { AppSidebar } from "@/components/app-sidebar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
@@ -26,15 +28,15 @@ export default function RootLayout({
   const navLinks = [
     {
       name: "Home",
-      url: "dashboard",
+      url: "/teacher/dashboard",
     },
     {
       name: "Set Grades",
-      url: "dashboard/setGrades",
+      url: "/teacher/dashboard/setGrades",
     },
     {
       name: "Set Schedules",
-      url: "dashboard/setSchedules",
+      url: "/teacher/dashboard/setSchedules",
     },
   ];
 
@@ -44,8 +46,13 @@ export default function RootLayout({
         className={` ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ProtectedRoute role="TEACHER">
-          <Nav navLinks={navLinks} showLogOut={true} />
-          <main className="p-12">{children}</main>
+        <SidebarProvider>
+            <AppSidebar item={navLinks} />
+            <main className="p-12 w-full">
+              <SidebarTrigger />
+              {children}
+            </main>
+          </SidebarProvider>
         </ProtectedRoute>
       </body>
     </html>
