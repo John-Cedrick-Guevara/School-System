@@ -38,6 +38,10 @@ export default function RootLayout({
       name: "View Subjects",
       url: "/admin/dashboard/subjects",
     },
+    {
+      name: "View time stamps",
+      url: "/admin/dashboard/timeStamps",
+    },
   ];
 
   return (

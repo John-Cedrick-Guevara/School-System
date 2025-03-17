@@ -216,7 +216,7 @@ const usersPage = () => {
 
         <TableBody>
           {allUsers
-            ?.filter((item) => (!searchId ? item : item.id.includes(searchId)))
+            ?.filter((item) => (!searchId ? item : item.id.toLowerCase().includes(searchId.toLowerCase())))
             .filter((item) => (!section ? item : section === item.sectionId))
             .filter((item) => (!role ? item : role === item.role))
             .map((item, index) => {

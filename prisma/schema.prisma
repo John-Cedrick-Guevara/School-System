@@ -114,8 +114,7 @@ enum Day {
 
 model Time {
   id        Int    @id @default(autoincrement())
-  startTime String
-  endTime   String
+  timeStamp  String
 
   @@map("time") // Maps to the 'time' table in MySQL
 }

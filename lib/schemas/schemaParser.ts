@@ -35,7 +35,14 @@ export const createSSubjectSchema = z.object({
   newId:z.string().nonempty("Section id cannot be null."),
   name: z.string().nonempty("Section name cannot be null."),
 });
+export const createTimeSchema = z.object({
+  timeStamp: z.string().nonempty("Tiome  cannot be null."),
+});
 
+export const editTimeSchema = z.object({
+  timeStamp: z.string().nonempty("Time cannot be null."),
+  id:z.number().min(0),
+});
 export const editSubjectSchema = z.object({
   name: z.string().nonempty("Section name cannot be null."),
   id:z.string().min(0),
