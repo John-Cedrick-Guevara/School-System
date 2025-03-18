@@ -1,5 +1,4 @@
-import { createSubject,  deleteTimeStamp, editSubject, getSubjects } from "@/app/server/actions/subjects";
-import { createTimeStamp, editTimeStamp, getTimeStamps } from "@/app/server/actions/timeStamps";
+import { createTimeStamp, deleteTimeStamp, editTimeStamp, getTimeStamps } from "@/app/server/actions/timeStamps";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET() {

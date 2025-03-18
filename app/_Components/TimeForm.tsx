@@ -23,7 +23,6 @@ const TimeForm = ({ buttonName, data, setData, handleSubmit }: Props) => {
     setData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
-      newId: e.target.name === "name" ? e.target.value : prev.id,
     }));
   }
 
@@ -43,7 +42,7 @@ const TimeForm = ({ buttonName, data, setData, handleSubmit }: Props) => {
             onChange={handleChange}
             type="text"
             id="time"
-            placeholder="ex. 7:00am"
+            placeholder="24hr format"
           />
         </div>
 

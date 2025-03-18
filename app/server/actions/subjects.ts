@@ -47,12 +47,12 @@ export async function editSubject(data: {
   }
 
   
-export async function deleteTimeStamp(data: {
-    timeStamp: string;
-    id: number;
+export async function deleteSubject(data: {
+    name: string;
+    id: string;
   }) {
     try {
-      const res = await prisma.time.delete({
+      const res = await prisma.subject.delete({
         where: {
           id: data.id,
         },

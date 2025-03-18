@@ -16,6 +16,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import useSWR from "swr";
 
+// data interfaces
 interface Subject {
   name: string;
   id: string;
@@ -28,18 +29,49 @@ interface Section {
   newId?: string;
 }
 
+interface TimeStamp {
+  timeStamp: string;
+  id: number;
+}
+
+interface Schedule {
+  id?: string;
+  subjectName: string;
+  section: string;
+  startTime: string;
+  day: string;
+  endTime: string;
+}
+
+// subject fetcher
 const subjectFetcher = (url: string) =>
   axios.get(url).then((res) => res.data.subjects);
 
+// sections fetcher
 const sectionFetcher = (url: string) =>
   axios.get(url).then((res) => res.data.sections);
 
+// timeStamps fetcher
+const timeStampFetcher = (url: string) =>
+  axios.get(url).then((res) => res.data.timeStamps);
+
+// main page
 const page = () => {
+  const user = useUser();
   const [showSetSched, setShowSetSched] = useState(true);
   const [section, setSection] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
   const [subject, setSubject] = useState("");
   const [day, setDay] = useState("");
-  const user = useUser();
+  const [scheduleData, setScheduleData] = useState<Schedule>({
+    id: user?.id,
+    subjectName: subject,
+    section: section,
+    day: day,
+    startTime: startTime,
+    endTime: endTime,
+  });
 
   const daysOfWeek = [
     "MONDAY",
@@ -50,6 +82,7 @@ const page = () => {
     "SATURDAY ",
   ];
 
+  // swrs for data
   const {
     data: allSubjects,
     error: subjectError,
@@ -61,20 +94,52 @@ const page = () => {
     error: sectionMutate,
     mutate: sectiontError,
   } = useSWR<Section[]>("/api/sections", sectionFetcher);
-  console.log(allSections);
+
+  const {
+    data: allTimeStamps,
+    error: timeStampMutate,
+    mutate: timeStampError,
+  } = useSWR<TimeStamp[]>("/api/timeStamps", timeStampFetcher);
+
+  function handleChange(
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) {
+    setScheduleData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  }
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    
+    console.log(scheduleData);
+  }
+
   return (
     <main>
       <h1> Scheduling page</h1>
 
       {showSetSched && (
-        <main className="absolute bg-secondary p-5 left-0 right-0 mx-auto w-fit rounded-lg mt-10">
-          <form action="" className="space-y-5 flex flex-col">
+        <main className="absolute bg-secondary  p-5 left-0 right-0 mx-auto w-fit rounded-lg mt-10">
+          <form
+            onSubmit={handleSubmit}
+            action=""
+            className="space-y-5 flex flex-col "
+          >
             {/* teacher id */}
             <div className="flex flex-col w-full max-w-sm gap-1.5">
               <Label htmlFor="id">Teacher ID:</Label>
-              <Input name="id" type="id" id="id" placeholder="Enter your ID." />
+              <Input
+                value={scheduleData.id}
+                onChange={handleChange}
+                name="id"
+                type="id"
+                id="id"
+                placeholder="Enter your ID."
+              />
             </div>
-            
+
             {/* section and subject container */}
             <div className="flex items-center gap-4">
               {/* section to teach */}
@@ -83,15 +148,17 @@ const page = () => {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="outline">
-                      {!section ? "Select section:" : section}{" "}
+                      {!scheduleData.section ? "Select section:" : scheduleData.section }{" "}
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-56">
                     <DropdownMenuLabel>Sections</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuRadioGroup
-                      value={section}
-                      onValueChange={setSection}
+                      value={scheduleData.section}
+                      onValueChange={(value) =>
+                        setScheduleData((prev) => ({ ...prev, section: value }))
+                      }
                     >
                       {allSections?.map((item) => {
                         return (
@@ -114,15 +181,20 @@ const page = () => {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="outline">
-                      {!subject ? "Select subject:" : subject}{" "}
+                      {!scheduleData.subjectName ? "Select subject:" : scheduleData.subjectName}{" "}
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-56">
                     <DropdownMenuLabel>Sections</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuRadioGroup
-                      value={subject}
-                      onValueChange={setSubject}
+                      value={scheduleData.subjectName}
+                      onValueChange={(value) =>
+                        setScheduleData((prev) => ({
+                          ...prev,
+                          subjectName: value,
+                        }))
+                      }
                     >
                       {allSubjects?.map((item) => {
                         return (
@@ -148,23 +220,28 @@ const page = () => {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="outline">
-                      {!subject ? "Select subject:" : subject}{" "}
+                      {!scheduleData.startTime ? "Select time:" :scheduleData.startTime}{" "}
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-56">
-                    <DropdownMenuLabel>Sections</DropdownMenuLabel>
+                    <DropdownMenuLabel>Time Stamps</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuRadioGroup
-                      value={subject}
-                      onValueChange={setSubject}
+                      value={scheduleData.startTime}
+                      onValueChange={(value) =>
+                        setScheduleData((prev) => ({
+                          ...prev,
+                          startTime: value,
+                        }))
+                      }
                     >
-                      {allSubjects?.map((item) => {
+                      {allTimeStamps?.map((item) => {
                         return (
                           <DropdownMenuRadioItem
-                            value={item.name}
+                            value={item.timeStamp}
                             key={item.id}
                           >
-                            {item.name}
+                            {item.timeStamp}
                           </DropdownMenuRadioItem>
                         );
                       })}
@@ -179,26 +256,38 @@ const page = () => {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="outline">
-                      {!subject ? "Select subject:" : subject}{" "}
+                      {!scheduleData.endTime ? "Select time:" : scheduleData.endTime}{" "}
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-56">
-                    <DropdownMenuLabel>Sections</DropdownMenuLabel>
+                    <DropdownMenuLabel>Time Stamps</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuRadioGroup
-                      value={subject}
-                      onValueChange={setSubject}
+                      value={scheduleData.endTime}
+                      onValueChange={(value) =>
+                        setScheduleData((prev) => ({ ...prev, endTime: value }))
+                      }
                     >
-                      {allSubjects?.map((item) => {
-                        return (
-                          <DropdownMenuRadioItem
-                            value={item.name}
-                            key={item.id}
-                          >
-                            {item.name}
-                          </DropdownMenuRadioItem>
-                        );
-                      })}
+                      {allTimeStamps
+                        ?.filter((item) => {
+                          if (startTime) {
+                            return (
+                              parseInt(item.timeStamp.slice(0, 2)) >
+                              parseInt(startTime.slice(0, 2))
+                            );
+                          }
+                          return true;
+                        })
+                        .map((item) => {
+                          return (
+                            <DropdownMenuRadioItem
+                              value={item.timeStamp}
+                              key={item.id}
+                            >
+                              {item.timeStamp}
+                            </DropdownMenuRadioItem>
+                          );
+                        })}
                     </DropdownMenuRadioGroup>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -211,13 +300,18 @@ const page = () => {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline">
-                    {!day ? "Select day:" : day}{" "}
+                    {!scheduleData.day ? "Select day:" : scheduleData.day}{" "}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56">
                   <DropdownMenuLabel>Days</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuRadioGroup value={day} onValueChange={setDay}>
+                  <DropdownMenuRadioGroup
+                    value={scheduleData.day}
+                    onValueChange={(value) =>
+                      setScheduleData((prev) => ({ ...prev, day: value }))
+                    }
+                  >
                     {daysOfWeek?.map((item) => {
                       return (
                         <DropdownMenuRadioItem value={item} key={item}>
@@ -229,6 +323,8 @@ const page = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
+
+            <Button variant={"outline"}>Save</Button>
           </form>
         </main>
       )}

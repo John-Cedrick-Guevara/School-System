@@ -38,3 +38,20 @@ export async function editTimeStamp(data: { timeStamp: string; id: number }) {
     return error;
   }
 }
+
+  
+export async function deleteTimeStamp(data: {
+  timeStamp: string;
+  id: number;
+}) {
+  try {
+    const res = await prisma.time.delete({
+      where: {
+        id: data.id,
+      },
+    });
+    return res;
+  } catch (error) {
+    return error;
+  }
+}
