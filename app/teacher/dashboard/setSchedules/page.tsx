@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { scheduleSchema } from "@/lib/schemas/schemaParser";
 import axios from "axios";
 import React, { useState } from "react";
 import useSWR from "swr";
@@ -59,6 +60,7 @@ const timeStampFetcher = (url: string) =>
 const page = () => {
   const user = useUser();
   const [showSetSched, setShowSetSched] = useState(true);
+  const [formError, setFormError] = useState("");
   const [section, setSection] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
@@ -112,8 +114,23 @@ const page = () => {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    console.log(scheduleData)
+    const parsedData = scheduleSchema.safeParse(scheduleData);
     
-    console.log(scheduleData);
+    console.log(parsedData.error?.errors)
+    console.log(parsedData.data)
+    try {
+      if (parsedData.success) {
+        await axios.post("/api/schedules", parsedData.data);
+    
+        setShowSetSched(false);
+      } else {
+        setFormError(parsedData.error.errors[0].message);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
   }
 
   return (
@@ -148,7 +165,9 @@ const page = () => {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="outline">
-                      {!scheduleData.section ? "Select section:" : scheduleData.section }{" "}
+                      {!scheduleData.section
+                        ? "Select section:"
+                        : scheduleData.section}{" "}
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-56">
@@ -181,7 +200,9 @@ const page = () => {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="outline">
-                      {!scheduleData.subjectName ? "Select subject:" : scheduleData.subjectName}{" "}
+                      {!scheduleData.subjectName
+                        ? "Select subject:"
+                        : scheduleData.subjectName}{" "}
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-56">
@@ -220,7 +241,9 @@ const page = () => {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="outline">
-                      {!scheduleData.startTime ? "Select time:" :scheduleData.startTime}{" "}
+                      {!scheduleData.startTime
+                        ? "Select time:"
+                        : scheduleData.startTime}{" "}
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-56">
@@ -256,7 +279,9 @@ const page = () => {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="outline">
-                      {!scheduleData.endTime ? "Select time:" : scheduleData.endTime}{" "}
+                      {!scheduleData.endTime
+                        ? "Select time:"
+                        : scheduleData.endTime}{" "}
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-56">
@@ -270,10 +295,10 @@ const page = () => {
                     >
                       {allTimeStamps
                         ?.filter((item) => {
-                          if (startTime) {
+                          if (scheduleData.startTime) {
                             return (
                               parseInt(item.timeStamp.slice(0, 2)) >
-                              parseInt(startTime.slice(0, 2))
+                              parseInt(scheduleData.startTime.slice(0, 2))
                             );
                           }
                           return true;
