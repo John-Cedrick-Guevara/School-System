@@ -27,12 +27,12 @@ export const logInSchema = z.object({
 });
 
 export const createSectionSchema = z.object({
-  newId:z.string().nonempty("Section id cannot be null."),
+  newId: z.string().nonempty("Section id cannot be null."),
   name: z.string().nonempty("Section name cannot be null."),
 });
 
 export const createSSubjectSchema = z.object({
-  newId:z.string().nonempty("Section id cannot be null."),
+  newId: z.string().nonempty("Section id cannot be null."),
   name: z.string().nonempty("Section name cannot be null."),
 });
 export const createTimeSchema = z.object({
@@ -41,32 +41,26 @@ export const createTimeSchema = z.object({
 
 export const editTimeSchema = z.object({
   timeStamp: z.string().nonempty("Time cannot be null."),
-  id:z.number().min(0),
+  id: z.number().min(0),
 });
 export const editSubjectSchema = z.object({
   name: z.string().nonempty("Section name cannot be null."),
-  id:z.string().min(0),
-  newId:z.string().nonempty("Section id cannot be null."),
+  id: z.string().min(0),
+  newId: z.string().nonempty("Section id cannot be null."),
 });
 
 export const editSectionSchema = z.object({
   name: z.string().nonempty("Section name cannot be null."),
-  id:z.string().min(0),
-  newId:z.string().nonempty("Section id cannot be null."),
+  id: z.string().min(0),
+  newId: z.string().nonempty("Section id cannot be null."),
 });
 
 export const scheduleSchema = z.object({
+  id: z.string().optional(),
   day: z.string().nonempty("Day cannot be null."),
   endTime: z.string().nonempty("End time cannot be null."),
-  id:z.string().nonempty("Teacher ID cannot be null."),
-  section: z.string().nonempty("Section cannot be null."),
+  teacherId: z.string().nonempty("Teacher ID cannot be null."),
+  sectionId: z.string().nonempty("Section cannot be null."),
   startTime: z.string().nonempty("Start time cannot be null."),
-  subjectName: z.string().nonempty("Subject cannot be null."),
-})
-
-
-
-
-
-
-
+  subjectId: z.string().nonempty("Subject cannot be null."),
+});

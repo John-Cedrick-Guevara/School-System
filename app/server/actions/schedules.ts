@@ -1,22 +1,76 @@
 import prisma from "@/lib/prisma";
+import { Day } from "@prisma/client";
 
-export async function createSchedule(data: {
-  day: "MONDAY" | "TUESDAY" | "WEDNESDAY" | "THURSDAY" | "FRIDAY";
+interface Schedule {
+  day: "MONDAY" | "TUESDAY" | "WEDNESDAY" | "THURSDAY" | "FRIDAY" | "SATURDAY";
   endTime: string;
-  id: string;
-  section: string;
+  teacherId: string;
+  sectionId: string;
   startTime: string;
-  subjectName: string;
-}) {
+  subjectId: string;
+  id?: string;
+}
+
+export async function createSchedule(data: Schedule) {
   try {
     const res = await prisma.schedule.create({
       data: {
-        teacherId: data.id,
-        sectionId: data.section,
-        subjectId: data.subjectName,
-        day: data.day,
+        teacherId: data.teacherId,
+        sectionId: data.sectionId,
+        subjectId: data.subjectId,
+        day: data.day as Day,
         startTime: data.startTime,
         endTime: data.endTime,
+      },
+    });
+    return res;
+  } catch (error) {
+    return error;
+  }
+}
+
+export async function getSchedule(id: string) {
+  try {
+    const schedule = await prisma.schedule.findMany({
+      where: {
+        teacherId: id,
+      },
+    });
+    return schedule;
+  } catch (error) {
+    return error;
+  }
+}
+
+export async function editSchedule(data: Schedule) {
+  console.log("data", data)
+
+  try {
+    const schedule = await prisma.schedule.update({
+      where: {
+        id: data.id,
+      },
+
+      data: {
+        teacherId: data.teacherId,
+        sectionId: data.sectionId,
+        subjectId: data.subjectId,
+        day: data.day as Day,
+        startTime: data.startTime,
+        endTime: data.endTime,
+      },
+    });
+    return schedule;
+  } catch (error) {
+    return error;
+  }
+}
+
+export async function deleteSchedule(data: Schedule) {
+  try {
+    const res = await prisma.schedule.delete({
+      where: {
+        id: data.id,
       },
     });
     return res;
