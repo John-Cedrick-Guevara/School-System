@@ -38,17 +38,21 @@ export default function RootLayout({
       name: "Set Schedules",
       url: "/teacher/dashboard/setSchedules",
     },
+    {
+      name: "View Schedule",
+      url: "/teacher/dashboard/viewSchedule",
+    },
   ];
 
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en" className="scroll-smooth ">
          <body
         className={` ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ProtectedRoute role="TEACHER">
-        <SidebarProvider>
+        <SidebarProvider >
             <AppSidebar item={navLinks} />
-            <main className="p-12 w-full">
+            <main className="p-12 w-full h-lvh">
               <SidebarTrigger />
               {children}
             </main>

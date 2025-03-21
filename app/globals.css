@@ -5,6 +5,7 @@
 
 body {
   font-family: "Inter", serif;
+  height: 100vh;
 }
 
 @layer base {

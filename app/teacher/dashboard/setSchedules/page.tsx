@@ -73,11 +73,6 @@ const page = () => {
   const [formError, setFormError] = useState("");
   const [isEditingSchedule, setIsEditingSchedule] = useState(false);
 
-  // const [section, setSection] = useState("");
-  // const [startTime, setStartTime] = useState("");
-  // const [endTime, setEndTime] = useState("");
-  // const [subject, setSubject] = useState("");
-  // const [day, setDay] = useState("");
   const [scheduleData, setScheduleData] = useState<Schedule>({
     teacherId: user?.id,
     subjectId: "",
@@ -205,6 +200,8 @@ const page = () => {
     <main>
       <h1> Scheduling page</h1>
 
+
+      {/* table of schedules WITH ACTIONS*/}
       <div>
         <Table className="mt-10">
           <TableCaption>Sections:</TableCaption>
@@ -257,9 +254,25 @@ const page = () => {
       </div>
 
       {/* create schedule form */}
-      {showSetSched && (
-        <main className="absolute bg-secondary  p-5 left-0 right-0 mx-auto w-fit rounded-lg mt-10">
-          <h1>create new sched</h1>
+      <main
+        className={`w-full  h-screen absolute top-0 right-0 flex items-center justify-center mx-auto transition-all scale-0 z-30 ${
+          showSetSched && "scale-100 bg-secondary bg-slate-300 bg-opacity-40"
+        }`}
+      >
+        <div className="bg-secondary w-full max-w-md p-5 rounded-lg">
+          <Button onClick={() => setShowSetSched(false)} variant={"outline"}>
+            <img src="/arrow.png" alt="" width={15} className=" rotate-180" />
+            Cancel
+          </Button>
+          <h1 className="text-xl font-semibold mb-3 text-center">
+            Add Schedule
+          </h1>
+          {/* error message */}
+          {formError && (
+            <h1 className="bg-red-500 p-2 rounded-md text-white text-center mb-4">
+              {formError}
+            </h1>
+          )}
           <SchduleForm
             buttonName={"Submit"}
             timeStamps={allTimeStamps!}
@@ -270,13 +283,33 @@ const page = () => {
             setData={setScheduleData}
             handleSubmit={handleSubmit}
           />
-        </main>
-      )}
+        </div>
+      </main>
 
       {/* edit schedule form */}
-      {isEditingSchedule && (
-        <main className="absolute bg-secondary  p-5 left-0 right-0 mx-auto w-fit rounded-lg mt-10">
-          <h1>edit Data</h1>
+      <main
+        className={`w-full  h-screen absolute top-0 right-0 flex items-center justify-center mx-auto transition-all scale-0 z-30 ${
+          isEditingSchedule &&
+          "scale-100 bg-secondary bg-slate-300 bg-opacity-40"
+        }`}
+      >
+        <div className="bg-secondary w-full max-w-md p-5 rounded-lg">
+          <Button
+            onClick={() => setIsEditingSchedule(false)}
+            variant={"outline"}
+          >
+            <img src="/arrow.png" alt="" width={15} className=" rotate-180" />
+            Cancel
+          </Button>
+          <h1 className="text-xl font-semibold mb-3 text-center">
+            Edit Schedule
+          </h1>
+          {/* error message */}
+          {formError && (
+            <h1 className="bg-red-500 p-2 rounded-md text-white text-center mb-4">
+              {formError}
+            </h1>
+          )}
           <SchduleForm
             buttonName={"Save"}
             timeStamps={allTimeStamps!}
@@ -287,8 +320,8 @@ const page = () => {
             setData={setEditScheduleData}
             handleSubmit={handleSubmitEditSchedule}
           />
-        </main>
-      )}
+        </div>
+      </main>
 
       {/* add schedule icon */}
       <img
