@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { useUser } from "@/app/context/UserContext";
 import { Schedule } from "@prisma/client";
 import axios from "axios";

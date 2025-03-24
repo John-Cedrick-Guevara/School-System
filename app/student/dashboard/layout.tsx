@@ -1,4 +1,7 @@
 import Nav from "@/app/_Components/Nav";
+import ProtectedRoute from "@/app/_Components/ProtectedRoute";
+import { AppSidebar } from "@/components/app-sidebar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
@@ -23,30 +26,34 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const navLinks = [
- {
-        name: "Home",
-        url: "home",
-      },
-      {
-        name: "View Grades",
-        url: "grades",
-      },
-      {
-        name: "View Schedules",
-        url: "schedules",
-      },
+    {
+      name: "Home",
+      url: "home",
+    },
+    {
+      name: "View Grades",
+      url: "grades",
+    },
+    {
+      name: "View Schedules",
+      url: "viewSchedules",
+    },
   ];
 
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en" className="scroll-smooth ">
       <body
         className={` ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Nav navLinks={navLinks} showLogOut={true} />
-        <main className="p-12">
-
-        {children}
-        </main>
+        <ProtectedRoute role="STUDENT">
+          <SidebarProvider>
+            <AppSidebar item={navLinks} />
+            <main className="p-12 w-full h-lvh">
+              <SidebarTrigger />
+              {children}
+            </main>
+          </SidebarProvider>
+        </ProtectedRoute>
       </body>
     </html>
   );
