@@ -19,9 +19,13 @@ const page = () => {
     data: allSchedule,
     error: scheduleError,
     mutate: scheduleMutate,
-  } = useSWR<Schedule[]>(["/api/schedules", user?.id], ([url, id]) =>
-    axios.get(`${url}?id=${id}`).then((res) => res.data)
+  } = useSWR<Schedule[]>(
+    ["/api/schedules", user?.id, user?.role],
+    ([url, id, role]) =>
+      axios.get(`${url}?id=${id}&role=${role}`).then((res) => res.data)
   );
+
+  console.log(allSchedule);
 
   return (
     <div>

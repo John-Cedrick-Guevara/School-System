@@ -45,12 +45,12 @@ export default function RootLayout({
   ];
 
   return (
-    <html lang="en" className="scroll-smooth ">
-         <body
+    <html lang="en" className={"scroll-smooth "}>
+      <body
         className={` ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ProtectedRoute role="TEACHER">
-        <SidebarProvider >
+          <SidebarProvider>
             <AppSidebar item={navLinks} />
             <main className="p-12 w-full h-lvh">
               <SidebarTrigger />

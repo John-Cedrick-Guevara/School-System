@@ -1,11 +1,16 @@
-import { createSchedule, deleteSchedule, editSchedule, getSchedule } from "@/app/server/actions/schedules";
+import {
+  createSchedule,
+  deleteSchedule,
+  editSchedule,
+  getSchedule,
+} from "@/app/server/actions/schedules";
 import { NextApiRequest } from "next";
 import { NextRequest } from "next/dist/server/web/spec-extension/request";
 import { NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   const data = await req.json();
-  console.log(data)
+  console.log(data);
   try {
     const res = await createSchedule(data);
     return NextResponse.json(res, { status: 201 });
@@ -16,10 +21,11 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   const id = req.nextUrl.searchParams.get("id");
+  const role = req.nextUrl.searchParams.get("role");
 
-  console.log("id", id);
+  console.log("id", role);
   try {
-    const res = await getSchedule(String(id));
+    const res = await getSchedule(String(id), String(role));
     return NextResponse.json(res, { status: 201 });
   } catch (error) {
     return NextResponse.json({ error: error }, { status: 500 });

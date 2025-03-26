@@ -29,21 +29,38 @@ export async function createSchedule(data: Schedule) {
   }
 }
 
-export async function getSchedule(id: string) {
+export async function getSchedule(id: string, role: string) {
+  console.log("asd",role)
   try {
-    const schedule = await prisma.schedule.findMany({
-      where: {
-        teacherId: id,
-      },
-    });
-    return schedule;
+    if (role === "TEACHER") {
+      const schedule = await prisma.schedule.findMany({
+        where: {
+          teacherId: id,
+        },
+      });
+      return schedule;
+    } else {
+      const schedule = await prisma.user.findUnique({
+        where: {
+          id: id,
+        },
+        include: {
+          section: {
+            include: {
+              schedules: true,
+            },
+          },
+        },
+      });
+      return schedule;
+    }
   } catch (error) {
     return error;
   }
 }
 
 export async function editSchedule(data: Schedule) {
-  console.log("data", data)
+  console.log("data", data);
 
   try {
     const schedule = await prisma.schedule.update({

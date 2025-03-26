@@ -36,7 +36,7 @@ export default function RootLayout({
     },
     {
       name: "View Schedules",
-      url: "viewSchedules",
+      url: "/student/dashboard/viewSchedules",
     },
   ];
 
