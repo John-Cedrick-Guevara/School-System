@@ -1,18 +1,12 @@
+import { Schedule } from "@/app/interfaces";
 import prisma from "@/lib/prisma";
 import { Day } from "@prisma/client";
 
-interface Schedule {
-  day: "MONDAY" | "TUESDAY" | "WEDNESDAY" | "THURSDAY" | "FRIDAY" | "SATURDAY";
-  endTime: string;
-  teacherId: string;
-  sectionId: string;
-  startTime: string;
-  subjectId: string;
-  id?: string;
-}
-
 export async function createSchedule(data: Schedule) {
   try {
+    if (!data.teacherId) {
+      throw new Error("Teacher ID is required");
+    }
     const res = await prisma.schedule.create({
       data: {
         teacherId: data.teacherId,
@@ -30,7 +24,6 @@ export async function createSchedule(data: Schedule) {
 }
 
 export async function getSchedule(id: string, role: string) {
-  console.log("asd",role)
   try {
     if (role === "TEACHER") {
       const schedule = await prisma.schedule.findMany({
@@ -65,7 +58,7 @@ export async function editSchedule(data: Schedule) {
   try {
     const schedule = await prisma.schedule.update({
       where: {
-        id: data.id,
+        id: data.scheduleId,
       },
 
       data: {
@@ -87,7 +80,7 @@ export async function deleteSchedule(data: Schedule) {
   try {
     const res = await prisma.schedule.delete({
       where: {
-        id: data.id,
+        id: data.scheduleId,
       },
     });
     return res;

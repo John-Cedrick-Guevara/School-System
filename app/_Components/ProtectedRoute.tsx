@@ -3,15 +3,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { UserContext } from "@/app/context/UserContext";
+import { User } from "../interfaces";
 
-interface User {
-  email: string;
-  id: string;
-  name: string;
-  password: string;
-  role: string;
-  sectionId: string;
-}
 
 export default function ProtectedRoute({
   role,

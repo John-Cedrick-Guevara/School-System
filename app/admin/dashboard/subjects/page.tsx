@@ -24,12 +24,9 @@ import axios from "axios";
 import { usePathname } from "next/navigation";
 import React, { useState } from "react";
 import useSWR from "swr";
+import { Subject } from "@/app/interfaces";
 
-interface Subject {
-  name: string;
-  id: string;
-  newId?: string;
-}
+
 const fetcher = (url: string) =>
   axios.get(url).then((res) => res.data.subjects);
 

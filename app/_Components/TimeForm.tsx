@@ -2,16 +2,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import React, { useState } from "react";
+import { TimeStamp } from "../interfaces";
 
-interface Section {
-  timeStamp: string;
-  id: string;
-}
 
 interface Props {
   buttonName: string;
-  data: Section;
-  setData: React.Dispatch<React.SetStateAction<Section>>;
+  data: TimeStamp;
+  setData: React.Dispatch<React.SetStateAction<TimeStamp>>;
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
 }
 

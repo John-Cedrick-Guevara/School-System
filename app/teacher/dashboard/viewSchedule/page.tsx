@@ -25,7 +25,6 @@ const page = () => {
       axios.get(`${url}?id=${id}&role=${role}`).then((res) => res.data)
   );
 
-  console.log(allSchedule);
 
   return (
     <div>

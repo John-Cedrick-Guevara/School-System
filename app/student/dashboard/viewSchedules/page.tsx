@@ -4,15 +4,8 @@ import axios from "axios";
 import React from "react";
 import useSWR from "swr";
 import { Schedule } from "@prisma/client";
-interface User {
-  action: string;
-  email: string;
-  id: string;
-  name: string;
-  password: string;
-  role: string;
-  sectionId: string;
-}
+
+
 
 const page = () => {
   const user = useUser();

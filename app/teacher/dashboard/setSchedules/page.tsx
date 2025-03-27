@@ -1,6 +1,7 @@
 "use client";
 import SchduleForm from "@/app/_Components/SchduleForm";
 import { useUser } from "@/app/context/UserContext";
+import { Schedule, Section, Subject, TimeStamp } from "@/app/interfaces";
 import { Button } from "@/components/ui/button";
 
 import { Input } from "@/components/ui/input";
@@ -15,6 +16,7 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { scheduleSchema } from "@/lib/schemas/schemaParser";
+import { Day } from "@prisma/client";
 import {
   Popover,
   PopoverTrigger,
@@ -23,34 +25,6 @@ import {
 import axios from "axios";
 import React, { useState } from "react";
 import useSWR from "swr";
-
-// data interfaces
-interface Subject {
-  name: string;
-  id: string;
-  newId?: string;
-}
-
-interface Section {
-  name: string;
-  id: string;
-  newId?: string;
-}
-
-interface TimeStamp {
-  timeStamp: string;
-  id: number;
-}
-
-interface Schedule {
-  id?: string;
-  teacherId?: string;
-  subjectId: string;
-  sectionId: string;
-  startTime: string;
-  day: string;
-  endTime: string;
-}
 
 // subject fetcher
 const subjectFetcher = (url: string) =>
@@ -77,16 +51,16 @@ const page = () => {
     teacherId: user?.id,
     subjectId: "",
     sectionId: "",
-    day: "",
+    day: "MONDAY",
     startTime: "",
     endTime: "",
   });
   const [editScheduleData, setEditScheduleData] = useState<Schedule>({
-    id: "",
+    scheduleId: "",
     teacherId: user?.id,
     subjectId: "",
     sectionId: "",
-    day: "",
+    day: "MONDAY",
     startTime: "",
     endTime: "",
   });
@@ -123,8 +97,10 @@ const page = () => {
     data: allSchedule,
     error: scheduleError,
     mutate: scheduleMutate,
-  } = useSWR<Schedule[]>(["/api/schedules", user?.id], ([url, id]) =>
-    axios.get(`${url}?id=${id}`).then((res) => res.data)
+  } = useSWR<Schedule[]>(
+    ["/api/schedules", user?.id, user?.role],
+    ([url, id, role]) =>
+      axios.get(`${url}?id=${id}&role=${role}`).then((res) => res.data)
   );
 
   // handles submition of new schdule
@@ -132,8 +108,6 @@ const page = () => {
     e.preventDefault();
 
     const parsedData = scheduleSchema.safeParse(scheduleData);
-    console.log(parsedData.error?.errors);
-    console.log(scheduleData);
 
     try {
       if (parsedData.success) {
@@ -174,7 +148,7 @@ const page = () => {
   function handleEditSchedule(item: Schedule) {
     setIsEditingSchedule((prev) => !prev);
     setEditScheduleData({
-      id: item.id,
+      scheduleId: item.scheduleId,
       teacherId: user?.id,
       subjectId: item.subjectId,
       sectionId: item.sectionId,
@@ -200,7 +174,6 @@ const page = () => {
     <main>
       <h1> Scheduling page</h1>
 
-
       {/* table of schedules WITH ACTIONS*/}
       <div>
         <Table className="mt-10">
@@ -219,8 +192,8 @@ const page = () => {
           </TableHeader>
 
           <TableBody>
-            {allSchedule?.map((item) => (
-              <TableRow key={item.id}>
+            {allSchedule?.map((item, index) => (
+              <TableRow key={index}>
                 <TableCell>{item.teacherId}</TableCell>
                 <TableCell>{item.subjectId}</TableCell>
                 <TableCell>{item.sectionId}</TableCell>
@@ -273,8 +246,10 @@ const page = () => {
               {formError}
             </h1>
           )}
+
           <SchduleForm
             buttonName={"Submit"}
+            allschedule={allSchedule}
             timeStamps={allTimeStamps!}
             subject={allSubjects!}
             section={allSections!}
@@ -313,6 +288,7 @@ const page = () => {
           <SchduleForm
             buttonName={"Save"}
             timeStamps={allTimeStamps!}
+            allschedule={allSchedule}
             subject={allSubjects!}
             section={allSections!}
             days={daysOfWeek}

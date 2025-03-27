@@ -15,8 +15,7 @@ import {
 } from "@/components/ui/popover"; 
 
 import axios from "axios";
-import { Section, Table as TableIcon } from "lucide-react"; // Renamed import
-
+import { Section } from "@/app/interfaces";
 import React, { useState } from "react";
 import useSWR from "swr";
 import BackButton from "@/app/_Components/BackButton";
@@ -32,11 +31,7 @@ import {
 const fetcher = (url: string) =>
   axios.get(url).then((res) => res.data.sections);
 
-interface Section {
-  name: string;
-  id: string;
-  newId?: string;
-}
+
 
 const Page = () => {
   const [isAddingSection, setIsAddingSection] = useState(false);

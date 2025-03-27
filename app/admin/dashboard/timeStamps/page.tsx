@@ -22,34 +22,30 @@ import { usePathname } from "next/navigation";
 import React, { useState } from "react";
 import useSWR from "swr";
 import TimeForm from "@/app/_Components/TimeForm";
+import { TimeStamp } from "@/app/interfaces";
 
-interface Time {
-  timeStamp: string;
-  id: string;
-  newId?: string;
-}
 const fetcher = (url: string) => axios.get(url).then((res) => res.data.timeStamps);
 
 
 const page = () => {
   const [editingTime, setEditingTime] = useState(false);
   const [formError, setFormError] = useState("");
-  const [addTimeCredentials, setAddTimeCredentials] = useState<Time>({
+  const [addTimeCredentials, setAddTimeCredentials] = useState<TimeStamp>({
     timeStamp: "",
-    id: "",
+    id: 0,
   });
   const [isAddingTime, setIsAddingTime] = useState(false);
 
-  const [editTimeCredentials, setEditTimeCredentials] = useState<Time>({
+  const [editTimeCredentials, setEditTimeCredentials] = useState<TimeStamp>({
     timeStamp: "",
-    id: "",
-    newId: "",
+    id: 0,
+    newId: 0,
   });
   const {
     data: allTimes,
     error,
     mutate,
-  } = useSWR<Time[]>("/api/timeStamps", fetcher);
+  } = useSWR<TimeStamp[]>("/api/timeStamps", fetcher);
 
   console.log(allTimes);
 
@@ -75,7 +71,7 @@ const page = () => {
   }
 
   // gets the current info of time to be edited
-  function handleEditTimeStamp(item: Time) {
+  function handleEditTimeStamp(item: TimeStamp) {
     setEditingTime((prev) => !prev);
     setEditTimeCredentials({
       timeStamp: item.timeStamp,
@@ -101,7 +97,7 @@ const page = () => {
         mutate();
         setIsAddingTime(false);
         setAddTimeCredentials({
-          id: "",
+          id: 0,
           timeStamp: "",
         });
       } else {
@@ -113,7 +109,7 @@ const page = () => {
   }
 
   // handle delete time stamp
-  async function handleDeleteTimeStamp(item: Time) {
+  async function handleDeleteTimeStamp(item: TimeStamp) {
     console.log(item);
     try {
       const res = await axios.delete("/api/timeStamps", {

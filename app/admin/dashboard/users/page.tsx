@@ -38,26 +38,14 @@ import { cn } from "@/lib/utils";
 import { ChevronsUpDown, Check } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Section, User } from "@/app/interfaces";
 const userFetcher = (url: string) =>
   axios.get(url).then((res) => res.data.users);
 
 const sectionFetcher = (url: string) =>
   axios.get(url).then((res) => res.data.sections);
 
-interface User {
-  action: string;
-  email: string;
-  id: string;
-  name: string;
-  password: string;
-  role: string;
-  sectionId: string;
-}
-interface Section {
-  name: string;
-  id: string;
-  newId?: string;
-}
+
 
 // main
 const usersPage = () => {

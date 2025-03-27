@@ -14,16 +14,7 @@ import {
 import { Label } from "@radix-ui/react-label";
 import axios from "axios";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
-
-interface User {
-  action: string;
-  name: string;
-  email: string;
-  password: string;
-  sectionId: string ; 
-  id: string;
-  role: string;
-}
+import { User, Section } from "../interfaces";
 
 interface Props {
   buttonName: string,
@@ -32,15 +23,12 @@ interface Props {
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
 }
 
-interface section {
-  name: string;
-  id: string
-}
+
 
 const CreateUserComponent = ({ data, setData, handleSubmit,buttonName }: Props) => {
   const [role, setRole] = useState<"STUDENT" | "TEACHER" | "ADMIN">("STUDENT");
   const [section, setsection] = useState("");
-  const [allsection, setAllSection] = useState<section[]>([]);
+  const [allsection, setAllSection] = useState<Section[]>([]);
 
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>

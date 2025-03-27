@@ -2,11 +2,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import React, { useState } from "react";
+import { Section } from "../interfaces";
 
-interface Section {
-  name: string;
-  id: string;
-}
+
 
 interface Props {
   buttonName: string;

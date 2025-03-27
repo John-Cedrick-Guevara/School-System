@@ -11,35 +11,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Label } from "@radix-ui/react-label";
 import React from "react";
-
-// data interfaces
-interface Schedule {
-  scheduleId?: string;
-  teacherId?: string;
-  subjectId: string;
-  sectionId: string;
-  startTime: string;
-  day: string;
-  endTime: string;
-}
-interface Subject {
-  name: string;
-  id: string;
-  newId?: string;
-}
-
-interface Section {
-  name: string;
-  id: string;
-  newId?: string;
-}
-
-interface TimeStamp {
-  timeStamp: string;
-  id: number;
-}
+import { Schedule, Section, Subject, TimeStamp } from "../interfaces";
 
 interface Props {
+  allschedule?: Schedule[];
   buttonName: string;
   timeStamps: TimeStamp[];
   subject: Subject[];
@@ -52,6 +27,7 @@ interface Props {
 
 const SchduleForm = ({
   section,
+  allschedule,
   days,
   subject,
   timeStamps,
@@ -87,6 +63,36 @@ const SchduleForm = ({
             id="id"
             placeholder="Enter your ID."
           />
+        </div>
+
+        {/* day */}
+        <div className="flex flex-col w-full max-w-sm gap-1.5">
+          <Label>Day:</Label>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline">
+                {!data.day ? "Select day:" : data.day}{" "}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+              <DropdownMenuLabel>Days</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuRadioGroup
+                value={data.day}
+                onValueChange={(value) =>
+                  setData((prev) => ({ ...prev, day: value }))
+                }
+              >
+                {days?.map((item) => {
+                  return (
+                    <DropdownMenuRadioItem value={item} key={item}>
+                      {item}
+                    </DropdownMenuRadioItem>
+                  );
+                })}
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
         {/* section and subject container */}
@@ -178,16 +184,46 @@ const SchduleForm = ({
                     }))
                   }
                 >
-                  {timeStamps?.map((item) => {
-                    return (
-                      <DropdownMenuRadioItem
-                        value={item.timeStamp}
-                        key={item.id}
-                      >
-                        {item.timeStamp}
-                      </DropdownMenuRadioItem>
-                    );
-                  })}
+                  {timeStamps
+                    ?.sort((a, b) => {
+                      const timeA =
+                        parseInt(a.timeStamp.slice(0, 2)) * 60 +
+                        parseInt(a.timeStamp.slice(3, 5));
+                      const timeB =
+                        parseInt(b.timeStamp.slice(0, 2)) * 60 +
+                        parseInt(b.timeStamp.slice(3, 5));
+
+                      return timeA - timeB; // Ensures ascending order
+                    })
+                    .map((time) => {
+                      return (
+                        <DropdownMenuRadioItem
+                          key={time.id}
+                          disabled={allschedule?.some((item) => {
+                            if (data.day !== item.day) return false; // Ensure it's the same day
+
+                            const selectedTime =
+                              parseInt(time.timeStamp.slice(0, 2)) * 60 +
+                              parseInt(time.timeStamp.slice(3, 5));
+                            const startTime =
+                              parseInt(item.startTime.slice(0, 2)) * 60 +
+                              parseInt(item.startTime.slice(3, 5));
+                            const endTime =
+                              parseInt(item.endTime.slice(0, 2)) * 60 +
+                              parseInt(item.endTime.slice(3, 5));
+
+                            // Disable if the selected time is within an existing schedule's range
+                            return (
+                              selectedTime >= startTime &&
+                              selectedTime < endTime
+                            );
+                          })}
+                          value={time.timeStamp}
+                        >
+                          {time.timeStamp}
+                        </DropdownMenuRadioItem>
+                      );
+                    })}
                 </DropdownMenuRadioGroup>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -235,36 +271,6 @@ const SchduleForm = ({
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-        </div>
-
-        {/* day */}
-        <div className="flex flex-col w-full max-w-sm gap-1.5">
-          <Label>Day:</Label>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline">
-                {!data.day ? "Select day:" : data.day}{" "}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56">
-              <DropdownMenuLabel>Days</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuRadioGroup
-                value={data.day}
-                onValueChange={(value) =>
-                  setData((prev) => ({ ...prev, day: value }))
-                }
-              >
-                {days?.map((item) => {
-                  return (
-                    <DropdownMenuRadioItem value={item} key={item}>
-                      {item}
-                    </DropdownMenuRadioItem>
-                  );
-                })}
-              </DropdownMenuRadioGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
         </div>
 
         <Button variant={"outline"}>{buttonName}</Button>
