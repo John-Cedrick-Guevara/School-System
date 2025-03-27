@@ -12,6 +12,7 @@ import {
 import { Label } from "@radix-ui/react-label";
 import React from "react";
 import { Schedule, Section, Subject, TimeStamp } from "../interfaces";
+import { Day } from "@prisma/client";
 
 interface Props {
   allschedule?: Schedule[];
@@ -79,8 +80,8 @@ const SchduleForm = ({
               <DropdownMenuSeparator />
               <DropdownMenuRadioGroup
                 value={data.day}
-                onValueChange={(value) =>
-                  setData((prev) => ({ ...prev, day: value }))
+                onValueChange={(value: string) =>
+                  setData((prev) => ({ ...prev, day: value as Day}))
                 }
               >
                 {days?.map((item) => {

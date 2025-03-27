@@ -17,39 +17,43 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { User, Section } from "../interfaces";
 
 interface Props {
-  buttonName: string,
+  buttonName: string;
   data: User;
   setData: React.Dispatch<React.SetStateAction<User>>;
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
 }
 
-
-
-const CreateUserComponent = ({ data, setData, handleSubmit,buttonName }: Props) => {
-  const [role, setRole] = useState<"STUDENT" | "TEACHER" | "ADMIN">("STUDENT");
+const CreateUserComponent = ({
+  data,
+  setData,
+  handleSubmit,
+  buttonName,
+}: Props) => {
   const [section, setsection] = useState("");
   const [allsection, setAllSection] = useState<Section[]>([]);
 
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) {
-    setData({ 
+    setData({
       ...data,
       [e.target.name]: e.target.value,
     });
-  }
 
+  }
+  
+  console.log(data.role)
   useEffect(() => {
     async function getSections() {
       try {
         const res = await axios.get("/api/sections");
-        setAllSection(res.data.sections)
-        console.log(allsection)
+        setAllSection(res.data.sections);
+        console.log(allsection);
       } catch (error) {
         console.log(error);
       }
     }
-    getSections()
+    getSections();
   }, []);
 
   return (
@@ -101,13 +105,17 @@ const CreateUserComponent = ({ data, setData, handleSubmit,buttonName }: Props) 
                   setsection(newSection);
                   setData((prev) => ({
                     ...prev,
-                    sectionId: newSection ,
+                    sectionId: newSection,
                   }));
                 }}
               >
                 {allsection.map((item, key) => {
                   return (
-                    <DropdownMenuRadioItem className="hover:bg-secondary p-1 rounded-sm cursor-pointer" key={key} value={item.id}>
+                    <DropdownMenuRadioItem
+                      className="hover:bg-secondary p-1 rounded-sm cursor-pointer"
+                      key={key}
+                      value={item.id}
+                    >
                       {item.name}
                     </DropdownMenuRadioItem>
                   );
@@ -120,7 +128,7 @@ const CreateUserComponent = ({ data, setData, handleSubmit,buttonName }: Props) 
         {/* student/tc id */}
         <div className="flex flex-col w-full max-w-md gap-1.5">
           <Label htmlFor="email">
-            {role === "STUDENT" ? "Student Id" : "Teacher Id"}
+            {data.role === "STUDENT" ? "Student Id" : "Teacher Id"}
           </Label>
           <Input
             value={data?.id}
@@ -128,7 +136,7 @@ const CreateUserComponent = ({ data, setData, handleSubmit,buttonName }: Props) 
             name="id"
             type="id"
             id="id"
-            placeholder={role === "STUDENT" ? "Student Id" : "Teacher Id"}
+            placeholder={data.role === "STUDENT" ? "Student Id" : "Teacher Id"}
           />
         </div>
 
@@ -148,7 +156,7 @@ const CreateUserComponent = ({ data, setData, handleSubmit,buttonName }: Props) 
         <div className="flex items-center justify-center gap-2">
           <h1>Student</h1>
           <Switch
-          checked={data.role === "TEACHER"}
+            checked={data.role === "TEACHER"}
             onClick={() =>
               setData((prev) => ({
                 ...prev,

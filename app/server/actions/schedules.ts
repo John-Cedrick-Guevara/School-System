@@ -53,12 +53,11 @@ export async function getSchedule(id: string, role: string) {
 }
 
 export async function editSchedule(data: Schedule) {
-  console.log("data", data);
-
+console.log("edited data", data)
   try {
     const schedule = await prisma.schedule.update({
       where: {
-        id: data.scheduleId,
+        scheduleId: data.scheduleId,
       },
 
       data: {
@@ -80,7 +79,7 @@ export async function deleteSchedule(data: Schedule) {
   try {
     const res = await prisma.schedule.delete({
       where: {
-        id: data.scheduleId,
+        scheduleId: data.scheduleId,
       },
     });
     return res;

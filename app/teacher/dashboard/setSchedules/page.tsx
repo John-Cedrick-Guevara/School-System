@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
   Table,
   TableCaption,
@@ -17,11 +18,7 @@ import {
 } from "@/components/ui/table";
 import { scheduleSchema } from "@/lib/schemas/schemaParser";
 import { Day } from "@prisma/client";
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@radix-ui/react-popover";
+
 import axios from "axios";
 import React, { useState } from "react";
 import useSWR from "swr";
@@ -127,6 +124,7 @@ const page = () => {
     e.preventDefault();
     const parsedScheduleCredentials =
       scheduleSchema.safeParse(editScheduleData);
+      
     console.log(parsedScheduleCredentials.data);
     try {
       if (parsedScheduleCredentials.success) {
@@ -160,6 +158,7 @@ const page = () => {
 
   // handle delete scetion
   async function handleDeleteSection(item: Schedule) {
+    
     try {
       const res = await axios.delete("/api/schedules", {
         data: item,

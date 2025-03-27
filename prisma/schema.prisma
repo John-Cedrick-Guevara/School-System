@@ -16,23 +16,21 @@ datasource db {
 // Users can be either STUDENT or TEACHER.
 // Students are linked to a Section; teachers are not.
 model User {
-  id        String     @id
-  name      String
-  email     String     @unique
-  password  String
-  role      Role
-  section   Section?   @relation(fields: [sectionId], references: [id])
-  sectionId String?
-  schedules Schedule[]
+  id            String     @id
+  name          String
+  email         String     @unique
+  password      String
+  role          Role
+  section       Section?   @relation(fields: [sectionId], references: [id])
+  sectionId     String?
+  schedules     Schedule[]
   // Grades received as a student
-  grades    Grade[]
+  grades        Grade[]
   // Grades assigned as a teacher
-  teacherGrades Grade[] @relation("TeacherGrades")
+  teacherGrades Grade[]    @relation("TeacherGrades")
 
   @@map("users")
 }
-
-
 
 // Sections represent class groups (e.g., Grade 10 - A).
 model Section {
@@ -49,7 +47,7 @@ model Section {
 
 // Subjects represent the courses (e.g., Math, Science).
 model Subject {
-  id        String     @id 
+  id        String     @id
   name      String     @unique
   schedules Schedule[]
   grades    Grade[]
@@ -60,16 +58,16 @@ model Subject {
 // Schedules represent a teacher's assigned class slot.
 // We use @@unique to prevent overlapping schedules for a given section and teacher.
 model Schedule {
-  id        String   @id @default(uuid()) 
-  teacher   User     @relation(fields: [teacherId], references: [id])
-  teacherId String
-  section   Section  @relation(fields: [sectionId], references: [id])
-  sectionId String
-  subject   Subject  @relation(fields: [subjectId], references: [id])
-  subjectId String
-  day       Day
-  startTime String
-  endTime   String
+  scheduleId String  @id @default(uuid())
+  teacher    User    @relation(fields: [teacherId], references: [id])
+  teacherId  String
+  section    Section @relation(fields: [sectionId], references: [id])
+  sectionId  String
+  subject    Subject @relation(fields: [subjectId], references: [id])
+  subjectId  String
+  day        Day
+  startTime  String
+  endTime    String
 
   // Ensure that in a given section, no two schedules overlap.
   @@unique([sectionId, day, startTime, endTime])
@@ -114,7 +112,7 @@ enum Day {
 
 model Time {
   id        Int    @id @default(autoincrement())
-  timeStamp  String
+  timeStamp String
 
   @@map("time") // Maps to the 'time' table in MySQL
 }

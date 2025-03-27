@@ -23,9 +23,9 @@ export async function GET(req: NextRequest) {
   const id = req.nextUrl.searchParams.get("id");
   const role = req.nextUrl.searchParams.get("role");
 
-  console.log("id", role);
   try {
     const res = await getSchedule(String(id), String(role));
+    console.log(res)
     return NextResponse.json(res, { status: 201 });
   } catch (error) {
     return NextResponse.json({ error: error }, { status: 500 });
@@ -45,7 +45,6 @@ export async function PUT(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   const data = await req.json();
-
   try {
     const res = await deleteSchedule(data);
     return NextResponse.json(res, { status: 201 });

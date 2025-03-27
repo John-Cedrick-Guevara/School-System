@@ -56,7 +56,7 @@ export const editSectionSchema = z.object({
 });
 
 export const scheduleSchema = z.object({
-  id: z.string().optional(),
+  scheduleId: z.string().optional(),
   day: z.string().nonempty("Day cannot be null."),
   endTime: z.string().nonempty("End time cannot be null."),
   teacherId: z.string().nonempty("Teacher ID cannot be null."),
