@@ -12,10 +12,12 @@ export default function TeacherDashboard() {
   );
 }
 
-// ✅ New component that consumes `useUser`
+
 function TeacherDashboardContent() {
   const router = useRouter();
   const user = useUser();
+
+  console.log(user)
 
   useEffect(() => {
     if (!user || user.role !== "TEACHER") {

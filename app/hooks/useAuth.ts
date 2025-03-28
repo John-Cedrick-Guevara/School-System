@@ -12,7 +12,7 @@ export function useAuth() {
       try {
         const res = await axios.get("/api/auth/me", { withCredentials: true });
         setUser(res.data);
-        console.log("Fetched user:", user); // Debugging
+        console.log("Fetched user:", user);
       } catch (error) {
         console.error("Error fetching user:", error);
       } finally {

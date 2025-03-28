@@ -57,12 +57,12 @@ export async function logInUser(email: string, password: string) {
     throw new Error("Email and password are required");
   }
 
-  const user = await prisma.user.findUnique({ where: { email } });
-  if (!user) {
-    return "No user found.";
-  }
-
   try {
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) {
+      return { message: "No User found", success: false };
+    }
+
     const passwordMatch = await bcrypt.compare(password, user.password);
 
     if (!passwordMatch) {
@@ -71,7 +71,13 @@ export async function logInUser(email: string, password: string) {
 
     // Generate JWT
     const token = jwt.sign(
-      { userData: user, role: user.role },
+      {
+        userData: {
+          name: user.name,
+          role: user.role,
+          id: user.id,
+        },
+      },
       process.env.JWT_SECRET!,
       {
         expiresIn: "1h",
@@ -130,4 +136,3 @@ export async function deleteUser(email: string) {
     return error;
   }
 }
-

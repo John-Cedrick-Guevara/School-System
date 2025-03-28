@@ -26,20 +26,18 @@ export async function createSchedule(data: Schedule) {
 export async function getSchedule(id: string, role: string) {
   try {
     if (role === "TEACHER") {
-      const schedule = await prisma.schedule.findMany({
-        where: {
-          teacherId: id,
-        },
-      });
+      const schedule = await prisma.schedule.findMany();
       return schedule;
     } else {
       const schedule = await prisma.user.findUnique({
         where: {
           id: id,
         },
-        include: {
+        select: {
+          id: true,
+          name: true,
           section: {
-            include: {
+            select: {
               schedules: true,
             },
           },
@@ -53,7 +51,7 @@ export async function getSchedule(id: string, role: string) {
 }
 
 export async function editSchedule(data: Schedule) {
-console.log("edited data", data)
+  console.log("edited data", data);
   try {
     const schedule = await prisma.schedule.update({
       where: {

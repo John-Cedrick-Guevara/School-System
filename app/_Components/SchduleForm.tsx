@@ -81,7 +81,7 @@ const SchduleForm = ({
               <DropdownMenuRadioGroup
                 value={data.day}
                 onValueChange={(value: string) =>
-                  setData((prev) => ({ ...prev, day: value as Day}))
+                  setData((prev) => ({ ...prev, day: value as Day }))
                 }
               >
                 {days?.map((item) => {
@@ -185,6 +185,7 @@ const SchduleForm = ({
                     }))
                   }
                 >
+                  {/* sorts the time on ascending order */}
                   {timeStamps
                     ?.sort((a, b) => {
                       const timeA =
@@ -194,30 +195,62 @@ const SchduleForm = ({
                         parseInt(b.timeStamp.slice(0, 2)) * 60 +
                         parseInt(b.timeStamp.slice(3, 5));
 
-                      return timeA - timeB; // Ensures ascending order
+                      return timeA - timeB;
                     })
                     .map((time) => {
                       return (
                         <DropdownMenuRadioItem
                           key={time.id}
+                          // disables occupied timeStamps
                           disabled={allschedule?.some((item) => {
-                            if (data.day !== item.day) return false; // Ensure it's the same day
+                            if (data.day !== item.day) {
+                              return false;
+                            } // Ensure it's the same day and section
 
+                            // time on timeStamps
                             const selectedTime =
                               parseInt(time.timeStamp.slice(0, 2)) * 60 +
                               parseInt(time.timeStamp.slice(3, 5));
+
+                            // start time on every schedules
                             const startTime =
                               parseInt(item.startTime.slice(0, 2)) * 60 +
                               parseInt(item.startTime.slice(3, 5));
+
+                            // end time on every schedules
                             const endTime =
                               parseInt(item.endTime.slice(0, 2)) * 60 +
                               parseInt(item.endTime.slice(3, 5));
 
-                            // Disable if the selected time is within an existing schedule's range
-                            return (
-                              selectedTime >= startTime &&
-                              selectedTime < endTime
-                            );
+                            // disables the occupied time of teacher
+                            if (
+                              item.teacherId === data.teacherId &&
+                              item.day === data.day
+                            ) {
+                              // checks if the time is within the time of schedules
+                              if (
+                                selectedTime >= startTime &&
+                                selectedTime < endTime
+                              ) {
+                                return true;
+                              }
+                            }
+
+                            // disables the occupied time of other teacher on specific section and day
+                            if (
+                              item.sectionId === data.sectionId &&
+                              item.day === data.day
+                            ) {
+                              // checks if the time is within the time of schedules
+                              if (
+                                selectedTime >= startTime &&
+                                selectedTime < endTime
+                              ) {
+                                return true;
+                              }
+                            }
+
+                            return false;
                           })}
                           value={time.timeStamp}
                         >
@@ -248,6 +281,7 @@ const SchduleForm = ({
                     setData((prev) => ({ ...prev, endTime: value }))
                   }
                 >
+                  {/* shows only the timeStamps that is greater than the startTime */}
                   {timeStamps
                     ?.filter((item) => {
                       if (data.startTime) {
@@ -258,13 +292,66 @@ const SchduleForm = ({
                       }
                       return true;
                     })
-                    .map((item) => {
+                    // maps timeStamps
+                    .map((time) => {
                       return (
                         <DropdownMenuRadioItem
-                          value={item.timeStamp}
-                          key={item.id}
+                          value={time.timeStamp}
+                          key={time.id}
+                          // disables occupied timeStamps
+                          disabled={allschedule?.some((item) => {
+                            if (!data.startTime) return true;
+                            if (data.day !== item.day) {
+                              return false;
+                            } // Ensure it's the same day and section
+
+                            // time on timeStamps
+                            const selectedTime =
+                              parseInt(time.timeStamp.slice(0, 2)) * 60 +
+                              parseInt(time.timeStamp.slice(3, 5));
+
+                            // start time on every schedules
+                            const startTime =
+                              parseInt(item.startTime.slice(0, 2)) * 60 +
+                              parseInt(item.startTime.slice(3, 5));
+
+                            // end time on every schedules
+                            const endTime =
+                              parseInt(item.endTime.slice(0, 2)) * 60 +
+                              parseInt(item.endTime.slice(3, 5));
+
+                            // disables the occupied time of teacher
+                            if (
+                              item.teacherId === data.teacherId &&
+                              item.day === data.day
+                            ) {
+                              // checks if the time is within the time of schedules
+                              if (
+                                selectedTime >= startTime &&
+                                selectedTime < endTime
+                              ) {
+                                return true;
+                              }
+                            }
+
+                            // disables the occupied time of other teacher on specific section and day
+                            if (
+                              item.sectionId === data.sectionId &&
+                              item.day === data.day
+                            ) {
+                              // checks if the time is within the time of schedules
+                              if (
+                                selectedTime >= startTime &&
+                                selectedTime < endTime
+                              ) {
+                                return true;
+                              }
+                            }
+
+                            return false;
+                          })}
                         >
-                          {item.timeStamp}
+                          {time.timeStamp}
                         </DropdownMenuRadioItem>
                       );
                     })}

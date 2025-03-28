@@ -48,7 +48,6 @@ const signIn_page = () => {
           );
 
           console.log(res.data.message);
-          // const role = res.data.message.user.role;
         } else {
           console.log("no data given");
         }

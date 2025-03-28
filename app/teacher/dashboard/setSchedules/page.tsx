@@ -6,7 +6,11 @@ import { Button } from "@/components/ui/button";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Table,
   TableCaption,
@@ -124,7 +128,7 @@ const page = () => {
     e.preventDefault();
     const parsedScheduleCredentials =
       scheduleSchema.safeParse(editScheduleData);
-      
+
     console.log(parsedScheduleCredentials.data);
     try {
       if (parsedScheduleCredentials.success) {
@@ -158,7 +162,6 @@ const page = () => {
 
   // handle delete scetion
   async function handleDeleteSection(item: Schedule) {
-    
     try {
       const res = await axios.delete("/api/schedules", {
         data: item,
@@ -191,36 +194,38 @@ const page = () => {
           </TableHeader>
 
           <TableBody>
-            {allSchedule?.map((item, index) => (
-              <TableRow key={index}>
-                <TableCell>{item.teacherId}</TableCell>
-                <TableCell>{item.subjectId}</TableCell>
-                <TableCell>{item.sectionId}</TableCell>
-                <TableCell>{item.day}</TableCell>
-                <TableCell>{item.startTime}</TableCell>
-                <TableCell>{item.endTime}</TableCell>
+            {allSchedule
+              ?.filter((item) => item.teacherId === user?.id)
+              .map((item, index) => (
+                <TableRow key={index}>
+                  <TableCell>{item.teacherId}</TableCell>
+                  <TableCell>{item.subjectId}</TableCell>
+                  <TableCell>{item.sectionId}</TableCell>
+                  <TableCell>{item.day}</TableCell>
+                  <TableCell>{item.startTime}</TableCell>
+                  <TableCell>{item.endTime}</TableCell>
 
-                <TableCell>
-                  <Popover>
-                    <PopoverTrigger>...</PopoverTrigger>
-                    <PopoverContent className="flex flex-col gap-1 z-20">
-                      <button
-                        onClick={() => handleEditSchedule(item)}
-                        className="hover:text-white hover:bg-slate-700 py-1 px-2 rounded-md transition-all cursor-pointer text-left"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDeleteSection(item)}
-                        className="hover:text-white hover:bg-red-500 py-1 px-2 rounded-md transition-all cursor-pointer text-left"
-                      >
-                        Delete
-                      </button>
-                    </PopoverContent>
-                  </Popover>
-                </TableCell>
-              </TableRow>
-            ))}
+                  <TableCell>
+                    <Popover>
+                      <PopoverTrigger>...</PopoverTrigger>
+                      <PopoverContent className="flex flex-col gap-1 z-20">
+                        <button
+                          onClick={() => handleEditSchedule(item)}
+                          className="hover:text-white hover:bg-slate-700 py-1 px-2 rounded-md transition-all cursor-pointer text-left"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDeleteSection(item)}
+                          className="hover:text-white hover:bg-red-500 py-1 px-2 rounded-md transition-all cursor-pointer text-left"
+                        >
+                          Delete
+                        </button>
+                      </PopoverContent>
+                    </Popover>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </div>
