@@ -87,7 +87,6 @@ const Page = () => {
       newId: item.id,
     });
 
-    console.log(item, editSectionCredentials);
   }
 
   //handles creation of section

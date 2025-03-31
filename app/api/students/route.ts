@@ -1,12 +1,17 @@
 import { deleteUser, getUsers, updateUser } from "@/app/server/actions/studens";
 import prisma from "@/lib/prisma";
 import { error } from "console";
+import { NextApiRequest } from "next";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const  section  = req.nextUrl.searchParams.get("section");
+
+
   try {
-    const users = await getUsers();
+    const users = await getUsers(section as string);
+
     return NextResponse.json(users, { status: 200 });
   } catch (error) {
     return NextResponse.json(
@@ -38,5 +43,3 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ error: error }, { status: 500 });
   }
 }
-
-

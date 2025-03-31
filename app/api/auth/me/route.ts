@@ -13,7 +13,6 @@ export async function GET() {
     }
     // gets the user data from token
     const userData = jwt.verify(token, process.env.JWT_SECRET!);
-    console.log(userData)
 
     return NextResponse.json(userData);
   } catch (error) {

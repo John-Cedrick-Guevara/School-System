@@ -6,6 +6,7 @@ import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { Role } from "@prisma/client";
+import { NextApiRequest } from "next";
 
 export async function createUser(data: {
   name: string;
@@ -43,9 +44,11 @@ export async function createUser(data: {
   }
 }
 
-export async function getUsers() {
+export async function getUsers(section: string) {
   try {
-    const users = await prisma.user.findMany();
+    const users = await prisma.user.findMany({
+      where: section ? { sectionId: section } : {},
+    });
     return { users };
   } catch (error) {
     return { error };

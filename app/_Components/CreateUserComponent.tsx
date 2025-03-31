@@ -42,13 +42,11 @@ const CreateUserComponent = ({
 
   }
   
-  console.log(data.role)
   useEffect(() => {
     async function getSections() {
       try {
         const res = await axios.get("/api/sections");
         setAllSection(res.data.sections);
-        console.log(allsection);
       } catch (error) {
         console.log(error);
       }

@@ -10,7 +10,6 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   const data = await req.json();
-  console.log(data);
   try {
     const res = await createSchedule(data);
     return NextResponse.json(res, { status: 201 });

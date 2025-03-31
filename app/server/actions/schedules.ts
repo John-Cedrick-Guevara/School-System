@@ -15,6 +15,7 @@ export async function createSchedule(data: Schedule) {
         day: data.day as Day,
         startTime: data.startTime,
         endTime: data.endTime,
+      
       },
     });
     return res;
@@ -51,7 +52,6 @@ export async function getSchedule(id: string, role: string) {
 }
 
 export async function editSchedule(data: Schedule) {
-  console.log("edited data", data);
   try {
     const schedule = await prisma.schedule.update({
       where: {
