@@ -63,7 +63,7 @@ const page = () => {
                     )}`}
                   >
                     {" "}
-                    See students
+                    Set grades to students
                   </Link>
                 </TableCell>
               </TableRow>

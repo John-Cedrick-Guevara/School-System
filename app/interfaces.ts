@@ -37,3 +37,12 @@ export interface TimeStamp {
   id: number;
   newId?: number ;
 }
+
+
+export interface Grades {
+  studentId: string
+  teacherId: string
+  sectionId: string
+  subjectId: string
+  grade: number
+}

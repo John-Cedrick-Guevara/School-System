@@ -1,6 +1,8 @@
 "use client";
 import { useUser } from "@/app/context/UserContext";
-import { User } from "@/app/interfaces";
+import { Grades, User } from "@/app/interfaces";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableCaption,
@@ -13,12 +15,19 @@ import {
 import axios from "axios";
 
 import { useParams } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 import useSWR from "swr";
 
 const page = () => {
   const params = useParams();
   const sectionName = decodeURIComponent(params.id as string);
+  const [grades, setGrades] = useState<Grades>({
+    studentId: "",
+    teacherId: "",
+    sectionId: "",
+    subjectId: "",
+    grade: 0,
+  });
 
   // fetcher
   const {
@@ -28,7 +37,19 @@ const page = () => {
   } = useSWR<User[]>(["/api/students", sectionName], ([url, section]) =>
     axios.get(`${url}?section=${sectionName}`).then((res) => res.data.users)
   );
-  console.log(allUsers);
+
+  function handleChange(
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) {
+    setGrades({
+      ...grades,
+      [e.target.name]: e.target.value,
+    });
+
+    console.log(e.target.parentNode)
+  }
+
+  function saveGrades() {}
 
   return (
     <div>
@@ -40,7 +61,10 @@ const page = () => {
           <TableRow>
             <TableHead>ID</TableHead>
             <TableHead>Name</TableHead>
-            <TableHead>Assign</TableHead>
+            <TableHead>Prelim</TableHead>
+            <TableHead>Midterm</TableHead>
+            <TableHead>Pre final</TableHead>
+            <TableHead>Finals</TableHead>
           </TableRow>
         </TableHeader>
 
@@ -49,10 +73,22 @@ const page = () => {
             <TableRow key={item.id}>
               <TableCell>{item.id}</TableCell>
               <TableCell>{item.name}</TableCell>
+              <TableCell>
+                <Input
+                  onChange={handleChange}
+                  type="number"
+                  min={0}
+                  name="grade"
+                  max={100}
+                  className="w-12"
+                ></Input>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
+
+      <Button onClick={saveGrades}>Save</Button>
     </div>
   );
 };
