@@ -8,8 +8,6 @@ export interface User {
   role: string;
 }
 
-
-
 export interface Schedule {
   scheduleId?: string;
   teacherId?: string;
@@ -35,14 +33,16 @@ export interface Section {
 export interface TimeStamp {
   timeStamp: string;
   id: number;
-  newId?: number ;
+  newId?: number;
 }
 
-
 export interface Grades {
-  studentId: string
-  teacherId: string
-  sectionId: string
-  subjectId: string
-  grade: number
+  studentId: string;
+  teacherId: string;
+  sectionId: string;
+  subjectId: string;
+  prelimGrade: number | null;
+  midtermGrade: number | null;
+  finalsGrade: number | null;
+  
 }

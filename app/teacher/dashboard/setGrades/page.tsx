@@ -32,7 +32,6 @@ const page = () => {
       axios.get(`${url}?id=${id}&role=${role}`).then((res) => res.data)
   );
 
-  console.log(allSchedule);
   return (
     <div>
       <Table className="mt-10">
@@ -60,7 +59,7 @@ const page = () => {
                   <Link
                     href={`/teacher/dashboard/setGrades/${encodeURIComponent(
                       item.sectionId
-                    )}`}
+                    )}/${encodeURIComponent(item.subjectId)}`}
                   >
                     {" "}
                     Set grades to students

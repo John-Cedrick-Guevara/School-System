@@ -79,20 +79,23 @@ model Schedule {
 // Grades represent the marks a student receives.
 // We ensure that a student has only one grade per subject.
 model Grade {
-  id        String   @id @default(uuid())
-  student   User     @relation(fields: [studentId], references: [id])
-  studentId String
-  teacher   User     @relation("TeacherGrades", fields: [teacherId], references: [id])
-  teacherId String
-  section   Section  @relation(fields: [sectionId], references: [id])
-  sectionId String
-  subject   Subject  @relation(fields: [subjectId], references: [id])
-  subjectId String
-  grade     Float
-  createdAt DateTime @default(now())
+  id           String   @id @default(uuid())
+  student      User     @relation(fields: [studentId], references: [id])
+  studentId    String  
+  teacher      User     @relation("TeacherGrades", fields: [teacherId], references: [id])
+  teacherId    String
+  section      Section  @relation(fields: [sectionId], references: [id])
+  sectionId    String
+  subject      Subject  @relation(fields: [subjectId], references: [id])
+  subjectId    String
+  prelimGrade  Float?
+  midtermGrade Float?
+  finalsGrade  Float?
+  createdAt    DateTime @default(now())
 
-  // Each student can only have one grade for a given subject.
-  @@unique([studentId, subjectId])
+  // ✅ Prevents duplicate grades for the same student & subject
+  @@unique([studentId, subjectId])  
+
   @@map("grades")
 }
 

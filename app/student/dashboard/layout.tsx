@@ -28,11 +28,11 @@ export default function RootLayout({
   const navLinks = [
     {
       name: "Home",
-      url: "home",
+      url: "/student/dashboard",
     },
     {
       name: "View Grades",
-      url: "grades",
+      url: "/student/dashboard/viewGrades",
     },
     {
       name: "View Schedules",
