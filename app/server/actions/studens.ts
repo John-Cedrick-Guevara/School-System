@@ -48,6 +48,11 @@ export async function getUsers(section: string) {
   try {
     const users = await prisma.user.findMany({
       where: section ? { sectionId: section } : {},
+      select: {
+        grades: true,
+        name:true,
+        id:true
+      },
     });
     return { users };
   } catch (error) {

@@ -19,13 +19,17 @@ import { useParams } from "next/navigation";
 import React, { useState } from "react";
 import useSWR from "swr";
 
+// main page
 const page = () => {
-  const user = useUser();
+  const user = useUser(); // user data
   const params = useParams();
+
+  // decoded sections and subject name
   const { sectionId, subjectId } = params;
   const sectionName = decodeURIComponent(sectionId as string);
   const subjectName = decodeURIComponent(subjectId as string);
 
+  //page variables
   const [grades, setGrades] = useState<Grades[]>([]);
   const [graded, setGraded] = useState(false);
   const terms = ["prelimGrade", "midtermGrade", "finalsGrade"];
@@ -39,6 +43,16 @@ const page = () => {
     axios.get(`${url}?section=${sectionName}`).then((res) => res.data.users)
   );
 
+  console.log(allUsers);
+  const {
+    data: allGrades,
+    error: GradesError,
+    mutate: gradesMutate,
+  } = useSWR<Grades[]>(
+    ["/api/grades", user?.id, user?.role],
+    ([url, id, role]) =>
+      axios.get(`${url}?id=${id}&role=${role}`).then((res) => res.data)
+  );
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
     student: User,
@@ -48,23 +62,37 @@ const page = () => {
       const existingGrade = prev.find((g) => g.studentId === student.id);
 
       if (existingGrade) {
+        // When grade exists, update the relevant term
         return prev.map((g) =>
           g.studentId === student.id
-            ? { ...g, [e.target.name]: parseFloat(e.target.value) }
+            ? {
+                ...g,
+                [term]: parseFloat(e.target.value),
+                // Ensure all grades are present
+                prelimGrade:
+                  term === "prelimGrade" ? Number(e.target.value) : null,
+                midtermGrade:
+                  term === "midtermGrade" ? parseFloat(e.target.value) : null,
+                finalsGrade:
+                  term === "finalsGrade" ? parseFloat(e.target.value) : null,
+              }
             : g
         );
       }
 
+      // When it's a new grade entry, add all properties with undefined if necessary
       return [
         ...prev,
         {
           studentId: student.id,
-          prelimGrade: parseInt(e.target.value),
-          midtermGrade: parseInt(e.target.value),
-          finalsGrade: parseInt(e.target.value),
           subjectId: subjectName,
           sectionId: sectionName,
-          teacherId: user?.id ? user.id : "",
+          teacherId: user?.id || "",
+          prelimGrade: term === "prelimGrade" ? Number(e.target.value) : null,
+          midtermGrade:
+            term === "midtermGrade" ? parseFloat(e.target.value) : null,
+          finalsGrade:
+            term === "finalsGrade" ? parseFloat(e.target.value) : null,
         },
       ];
     });
@@ -73,14 +101,13 @@ const page = () => {
   async function saveGrades() {
     try {
       const res = await axios.post("/api/grades", grades);
-
+      userMutate();
       console.log(res);
     } catch (error) {
       console.log(error);
     } finally {
       setGraded(true);
     }
-    console.log(grades);
   }
 
   return (
@@ -101,23 +128,28 @@ const page = () => {
         </TableHeader>
 
         <TableBody>
-          {allUsers?.map((item) => (
-            <TableRow key={item.id}>
-              <TableCell>{item.id}</TableCell>
-              <TableCell>{item.name}</TableCell>
-              {terms.map((term) => (
-                <TableCell key={term}>
-                  <Input
-                    onChange={(e) => handleChange(e, item, term)}
-                    type="number"
-                    disabled={graded}
-                    min={0}
-                    name={term}
-                    max={100}
-                    className="w-12"
-                  ></Input>
-                </TableCell>
-              ))}
+          {allUsers?.map((user) => (
+            <TableRow key={user.id}>
+              <TableCell>{user.id}</TableCell>
+              <TableCell>{user.name}</TableCell>
+              {terms.map((term) => {
+                console.log(user);
+                return (
+                  <TableCell key={term}>
+                    <Input
+                      onChange={(e) => handleChange(e, user, term)}
+                      type="number"
+                      value={user.grades?.[0]?.[term as keyof typeof user.grades[0]] ?? 0}
+
+                      disabled={user.grades?.length || 0 < 0 ? true : false}
+                      min={0}
+                      name={term}
+                      max={100}
+                      className="w-12"
+                    ></Input>
+                  </TableCell>
+                );
+              })}
             </TableRow>
           ))}
         </TableBody>

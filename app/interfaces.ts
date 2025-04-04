@@ -1,12 +1,3 @@
-export interface User {
-  action: string;
-  name: string;
-  email: string;
-  password: string;
-  sectionId: string;
-  id: string;
-  role: string;
-}
 
 export interface Schedule {
   scheduleId?: string;
@@ -46,3 +37,15 @@ export interface Grades {
   finalsGrade: number | null;
   
 }
+
+export interface User {
+  grades? : Grades[]
+  action: string;
+  name: string;
+  email: string;
+  password: string;
+  sectionId: string;
+  id: string;
+  role: string;
+}
+
