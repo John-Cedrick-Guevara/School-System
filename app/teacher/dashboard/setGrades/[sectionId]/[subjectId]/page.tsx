@@ -133,20 +133,23 @@ const page = () => {
               <TableCell>{user.id}</TableCell>
               <TableCell>{user.name}</TableCell>
               {terms.map((term) => {
+                const grade =
+                  user.grades?.[0]?.[term as keyof (typeof user.grades)[0]];
                 console.log(user);
                 return (
                   <TableCell key={term}>
-                    <Input
-                      onChange={(e) => handleChange(e, user, term)}
-                      type="number"
-                      value={user.grades?.[0]?.[term as keyof typeof user.grades[0]] ?? 0}
-
-                      disabled={user.grades?.length || 0 < 0 ? true : false}
-                      min={0}
-                      name={term}
-                      max={100}
-                      className="w-12"
-                    ></Input>
+                    {grade ? (
+                      <h1>{grade}</h1>
+                    ) : (
+                      <Input
+                        onChange={(e) => handleChange(e, user, term)}
+                        type="number"
+                        min={0}
+                        name={term}
+                        max={100}
+                        className="w-12"
+                      ></Input>
+                    )}
                   </TableCell>
                 );
               })}
