@@ -34,7 +34,7 @@ const page = () => {
   const [graded, setGraded] = useState(false);
   const terms = ["prelimGrade", "midtermGrade", "finalsGrade"];
 
-  // fetcher
+  // fetcher for users
   const {
     data: allUsers,
     error: userError,
@@ -43,16 +43,7 @@ const page = () => {
     axios.get(`${url}?section=${sectionName}`).then((res) => res.data.users)
   );
 
-  console.log(allUsers);
-  const {
-    data: allGrades,
-    error: GradesError,
-    mutate: gradesMutate,
-  } = useSWR<Grades[]>(
-    ["/api/grades", user?.id, user?.role],
-    ([url, id, role]) =>
-      axios.get(`${url}?id=${id}&role=${role}`).then((res) => res.data)
-  );
+
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
     student: User,
