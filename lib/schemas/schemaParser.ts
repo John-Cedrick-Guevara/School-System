@@ -64,3 +64,10 @@ export const scheduleSchema = z.object({
   startTime: z.string().nonempty("Start time cannot be null."),
   subjectId: z.string().nonempty("Subject cannot be null."),
 });
+
+export const announcementsSchema = z.object({
+  id: z.string().optional(),
+  title: z.string().nonempty("Title must have characters"),
+  description: z.string().nonempty("Description must have characters"),
+  for: z.string().nonempty(),
+});

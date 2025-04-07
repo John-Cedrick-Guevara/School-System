@@ -99,6 +99,14 @@ model Grade {
   @@map("grades")
 }
 
+model Announcements {
+  id String @id @unique @default(uuid())
+  title String
+  description String
+  for Role
+  createdAt DateTime @default(now())
+}
+
 enum Role {
   STUDENT
   TEACHER

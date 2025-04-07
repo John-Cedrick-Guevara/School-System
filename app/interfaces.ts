@@ -1,3 +1,4 @@
+import { Role } from "@prisma/client";
 
 export interface Schedule {
   scheduleId?: string;
@@ -35,11 +36,10 @@ export interface Grades {
   prelimGrade: number | null;
   midtermGrade: number | null;
   finalsGrade: number | null;
-  
 }
 
 export interface User {
-  grades? : Grades[]
+  grades?: Grades[];
   action: string;
   name: string;
   email: string;
@@ -49,3 +49,9 @@ export interface User {
   role: string;
 }
 
+export interface Announcements {
+  id?: string;
+  title: string;
+  description: string;
+  for: "STUDENT" | "TEACHER";
+}

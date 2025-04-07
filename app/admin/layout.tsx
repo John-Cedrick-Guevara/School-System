@@ -42,6 +42,10 @@ export default function RootLayout({
       name: "View time stamps",
       url: "/admin/dashboard/timeStamps",
     },
+    {
+      name: "Set Announcements",
+      url: "/admin/dashboard/announcements",
+    },
   ];
 
   return (
