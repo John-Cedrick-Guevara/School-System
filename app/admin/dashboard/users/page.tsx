@@ -39,18 +39,14 @@ import { ChevronsUpDown, Check } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Section, User } from "@/app/interfaces";
-
-
-const userFetcher = (url: string) =>
-  axios.get(url).then((res) => res.data.users);
+import { useUser } from "@/app/context/UserContext";
 
 const sectionFetcher = (url: string) =>
   axios.get(url).then((res) => res.data.sections);
 
-
-
 // main
 const usersPage = () => {
+  const user = useUser();
   const path = usePathname();
 
   const [section, setSection] = React.useState("");
@@ -67,7 +63,9 @@ const usersPage = () => {
     data: allUsers,
     error: userError,
     mutate: mutateUsers,
-  } = useSWR<User[]>("/api/students", userFetcher);
+  } = useSWR<User[]>(["/api/students", user?.role], ([url, role]) =>
+    axios.get(`${url}?role=${role}`).then((res) => res.data.users)
+  );
 
   const [editUser, setEditUser] = useState<boolean>(false);
   const [formError, setFormError] = useState<String>("");
@@ -80,6 +78,8 @@ const usersPage = () => {
     role: "",
     sectionId: "",
   });
+
+  console.log(allUsers);
 
   async function handleSubmitEditedUser(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -179,7 +179,9 @@ const usersPage = () => {
 
         {/* search for id */}
         <div className="flex items-center justify-start gap-1 w-fit">
-        <Label htmlFor="searchId" className="w-72">Search ID: </Label>
+          <Label htmlFor="searchId" className="w-72">
+            Search ID:{" "}
+          </Label>
           <Input
             name="searchId"
             value={searchId}
@@ -206,7 +208,11 @@ const usersPage = () => {
 
         <TableBody>
           {allUsers
-            ?.filter((item) => (!searchId ? item : item.id.toLowerCase().includes(searchId.toLowerCase())))
+            ?.filter((item) =>
+              !searchId
+                ? item
+                : item.id.toLowerCase().includes(searchId.toLowerCase())
+            )
             .filter((item) => (!section ? item : section === item.sectionId))
             .filter((item) => (!role ? item : role === item.role))
             .map((item, index) => {

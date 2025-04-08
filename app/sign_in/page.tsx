@@ -44,10 +44,15 @@ const signIn_page = () => {
           }
           const role = res.data.message.user.role;
           router.push(
-            `/${role === "ADMIN" ? "admin" : role === "STUDENT" ? "student" : "teacher"}/dashboard`
+            `/${
+              role === "ADMIN"
+                ? "admin"
+                : role === "STUDENT"
+                ? "student"
+                : "teacher"
+            }/dashboard`
           );
 
-          console.log(res.data.message);
         } else {
           console.log("no data given");
         }
@@ -61,13 +66,11 @@ const signIn_page = () => {
     setError("");
   }, 3000);
 
-  
-
   return (
     <main className="p-8 ">
       {/* back button */}
-     
-     <BackButton path={usePathname()}/>
+
+      <BackButton path={usePathname()} />
       <h1 className="text-4xl font-bold my-16 text-center">Log In</h1>
 
       {/* error message */}

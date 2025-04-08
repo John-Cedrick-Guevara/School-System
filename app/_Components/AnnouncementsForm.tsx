@@ -5,6 +5,16 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Role } from "@prisma/client";
 
 interface Props {
   buttonName: string;
@@ -64,18 +74,34 @@ const AnnouncementsForm = ({
           />
         </div>
         <div className="flex items-center justify-center gap-2">
-          <h1>Student</h1>
-          <Switch
-            checked={data.for === "TEACHER"}
-            onClick={() =>{
-              console.log(data.for)
-              setData((prev) => ({
-                ...prev,
-                for: prev.for === "STUDENT" ? "TEACHER" : "STUDENT",
-              }))}
-            }
-          />
-          <h1>Teacher</h1>
+          <Label htmlFor="name">Announcement Audience</Label>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline">{data.for}</Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+              <DropdownMenuLabel>Roles</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuRadioGroup
+                value={data.for}
+                onValueChange={(value) =>
+                  setData((prev) => ({
+                    ...prev,
+                    for: value as "STUDENT" | "TEACHER" | "ALL",
+                  }))
+                }
+              >
+                <DropdownMenuRadioItem value={"STUDENT"}>
+                  STUDENT
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value={"TEACHER"}>
+                  TEACHER
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value={"ALL"}>ALL</DropdownMenuRadioItem>
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
         <Button variant={"outline"}>{buttonName}</Button>

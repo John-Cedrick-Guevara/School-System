@@ -138,7 +138,7 @@ const SchduleForm = ({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56">
-                <DropdownMenuLabel>Sections</DropdownMenuLabel>
+                <DropdownMenuLabel>Subjects</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuRadioGroup
                   value={data.subjectId}

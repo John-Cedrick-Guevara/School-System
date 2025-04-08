@@ -50,8 +50,7 @@ const page = () => {
     mutate,
   } = useSWR<Announcements[]>(
     ["/api/announcements", user?.role],
-    ([url, role]) =>
-      axios.get(`${url}?&role=${role}`).then((res) => res.data)
+    ([url, role]) => axios.get(`${url}?&role=${role}`).then((res) => res.data)
   );
 
   // creation of data
@@ -139,6 +138,7 @@ const page = () => {
           <TableRow>
             <TableHead>Title</TableHead>
             <TableHead>Description</TableHead>
+            <TableHead>Audience</TableHead>
             <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -152,6 +152,7 @@ const page = () => {
                   ? item.description.slice(0.18) + "..."
                   : item.description}
               </TableCell>
+              <TableCell>{item.for}</TableCell>
               <TableCell>
                 <Popover>
                   <PopoverTrigger>...</PopoverTrigger>

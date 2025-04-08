@@ -35,6 +35,8 @@ function TeacherDashboardContent() {
     }
   }, [user]);
 
+  console.log(allAnnouncement)
+
   return (
     <main>
       <div className="flex justify-between items-center">

@@ -46,15 +46,20 @@ export async function createUser(data: {
 
 export async function getUsers(section: string) {
   try {
-    const users = await prisma.user.findMany({
-      where: section ? { sectionId: section } : {},
-      select: {
-        grades: true,
-        name:true,
-        id:true
-      },
-    });
-    return { users };
+    if (section) {
+      const users = await prisma.user.findMany({
+        where: section ? { sectionId: section } : {},
+        select: {
+          grades: true,
+          name: true,
+          id: true,
+        },
+      });
+      return { users };
+    } else {
+      const users = await prisma.user.findMany({});
+      return { users };
+    }
   } catch (error) {
     return { error };
   }

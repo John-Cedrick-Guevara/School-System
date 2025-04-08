@@ -1,13 +1,18 @@
 import prisma from "@/lib/prisma";
 import { Announcements, Role } from "@prisma/client";
 
-export async function getAnnouncements(role: "STUDENT" | "TEACHER" | "ADMIN") {
+export async function getAnnouncements(role: string) {
   try {
     if (role !== "ADMIN") {
       const announcements = await prisma.announcements.findMany({
-        where: {
-          for: role,
-        },
+        where: role !== "ADMIN"
+          ? {
+              OR: [
+                { for: role as any },  // cast if needed
+                { for: "ALL" },
+              ],
+            }
+          : {}, // no filtering for admin
       });
       return announcements;
     } else {

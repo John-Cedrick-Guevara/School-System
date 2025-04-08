@@ -81,7 +81,7 @@ model Schedule {
 model Grade {
   id           String   @id @default(uuid())
   student      User     @relation(fields: [studentId], references: [id])
-  studentId    String  
+  studentId    String
   teacher      User     @relation("TeacherGrades", fields: [teacherId], references: [id])
   teacherId    String
   section      Section  @relation(fields: [sectionId], references: [id])
@@ -94,17 +94,16 @@ model Grade {
   createdAt    DateTime @default(now())
 
   // ✅ Prevents duplicate grades for the same student & subject
-  @@unique([studentId, subjectId])  
-
+  @@unique([studentId, subjectId])
   @@map("grades")
 }
 
 model Announcements {
-  id String @id @unique @default(uuid())
-  title String
+  id          String   @id @unique @default(uuid())
+  title       String
   description String
-  for Role
-  createdAt DateTime @default(now())
+  for         String
+  createdAt   DateTime @default(now())
 }
 
 enum Role {

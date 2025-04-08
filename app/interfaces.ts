@@ -53,5 +53,5 @@ export interface Announcements {
   id?: string;
   title: string;
   description: string;
-  for: "STUDENT" | "TEACHER";
+  for: "STUDENT" | "TEACHER" | "ALL";
 }
