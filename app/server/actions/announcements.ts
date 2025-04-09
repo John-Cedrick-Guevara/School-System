@@ -3,6 +3,7 @@ import { Announcements, Role } from "@prisma/client";
 
 export async function getAnnouncements(role: string) {
   try {
+    // gets the announcements for their roles specificaly and for "all"
     if (role !== "ADMIN") {
       const announcements = await prisma.announcements.findMany({
         where: role !== "ADMIN"
@@ -15,7 +16,9 @@ export async function getAnnouncements(role: string) {
           : {}, // no filtering for admin
       });
       return announcements;
-    } else {
+    } 
+    // gets all the announcement for admin control
+    else {
       const announcements = await prisma.announcements.findMany({});
       return announcements;
     }
@@ -23,6 +26,8 @@ export async function getAnnouncements(role: string) {
     return error;
   }
 }
+
+// created announcements 
 export async function createAnnouncement(data: Announcements) {
   try {
     const announcements = await prisma.announcements.create({
@@ -33,6 +38,8 @@ export async function createAnnouncement(data: Announcements) {
     return error;
   }
 }
+
+// handles editing of announcements
 export async function editAnnouncement(data: Announcements) {
   try {
     const announcements = await prisma.announcements.update({
@@ -46,6 +53,8 @@ export async function editAnnouncement(data: Announcements) {
     return error;
   }
 }
+
+// handles deletion of announcements
 export async function deleteAnnouncement(data: Announcements) {
   try {
     const announcements = await prisma.announcements.delete({

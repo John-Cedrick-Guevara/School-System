@@ -21,7 +21,9 @@ const fetcher = (url: string) =>
   axios.get(url).then((res) => res.data.sections);
 
 const page = () => {
+  // gets the user's data
   const user = useUser();
+  // fetches all the schedule for the user(used to get sections where the teacher has students to be graded )
   const {
     data: allSchedule,
     error: scheduleError,
@@ -34,6 +36,7 @@ const page = () => {
 
   return (
     <div>
+      {/* list of sections the teacher has students */}
       <Table className="mt-10">
         <TableCaption>Sections:</TableCaption>
 

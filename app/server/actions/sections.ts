@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 
+// handles retrieval of sections
 export async function getSections() {
   try {
     const sections = await prisma.section.findMany();
@@ -9,7 +10,7 @@ export async function getSections() {
     return error;
   }
 }
-
+// handles creation of section
 export async function createSection(data: { name: string; newId: string }) {
   try {
     const res = await prisma.section.create({
@@ -24,6 +25,7 @@ export async function createSection(data: { name: string; newId: string }) {
   }
 }
 
+// handles editing of section
 export async function editSection(data: {
   name: string;
   id: string;
@@ -44,6 +46,8 @@ export async function editSection(data: {
     return error;
   }
 }
+
+//handles deletion of section
 export async function deleteSection(data: {
   name: string;
   id: string;

@@ -1,35 +1,19 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import Link from "next/link";
-import React, { use, useEffect, useState } from "react";
-import { Switch } from "@/components/ui/switch";
+import React, { useState } from "react";
 import axios from "axios";
-
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-} from "@radix-ui/react-dropdown-menu";
 import { signUpSchema } from "@/lib/schemas/schemaParser";
 import CreateUserComponent from "../_Components/CreateUserComponent";
 import BackButton from "../_Components/BackButton";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
+import { User } from "../interfaces";
 
 const signUp_page = () => {
   const router = useRouter();
-
+// error container
   const [error, setError] = useState("");
-  const [data, setData] = useState({
+  // data to be passed
+  const [data, setData] = useState<User>({
     action: "signup",
     name: "",
     email: "",
@@ -39,6 +23,7 @@ const signUp_page = () => {
     role: "STUDENT",
   });
 
+  // handles submission of data
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
@@ -50,7 +35,6 @@ const signUp_page = () => {
       try {
         if (parsedData) {
           const res = await axios.post("api/auth", parsedData.data);
-          console.log(res.data);
         } else {
           console.log("NO data");
         }
@@ -70,11 +54,10 @@ const signUp_page = () => {
     }
   }
 
+  // removes the error after 3s
   setTimeout(() => {
     setError("");
   }, 3000);
-
-  
 
   return (
     <main className="p-8 ">

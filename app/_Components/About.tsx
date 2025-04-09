@@ -3,8 +3,10 @@ import React from "react";
 const About = () => {
   return (
     <section id="about" className=" py-10 px-8 scroll-mt-20 ">
-      <h1 className="text-4xl font-bold mb-10">About</h1>
+      {/* headings */}
+      <h1 className="text-4xl font-bold mb-10">About</h1> 
 
+      {/* lorem description */}
       <div className="flex items-start gap-10 md:max-w-6xl mx-auto my-10" >
         <img className="w-96 scale-105 object-fill rounded-md max-lg:hidden" src="/main.jpg" alt="" />
         <p className="text-slate-500 font-semibold">

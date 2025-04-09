@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
+// sets the token to be expired
 export async function POST() {
     try {
       (await cookies()).set("token", "", { httpOnly: true, maxAge: 0 });

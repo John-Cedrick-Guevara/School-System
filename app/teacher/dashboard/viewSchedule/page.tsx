@@ -6,6 +6,7 @@ import React from "react";
 import useSWR from "swr";
 
 const page = () => {
+  // gets the user's data
   const user = useUser();
   const daysOfWeek = [
     "MONDAY",
@@ -15,6 +16,7 @@ const page = () => {
     "FRIDAY",
     "SATURDAY ",
   ];
+  // fetches all the schedules
   const {
     data: allSchedule,
     error: scheduleError,

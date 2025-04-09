@@ -15,7 +15,7 @@ import { Schedule, Section, Subject, TimeStamp } from "../interfaces";
 import { Day } from "@prisma/client";
 
 interface Props {
-  allschedule?: Schedule[];
+  allschedule?: Schedule[]; 
   buttonName: string;
   timeStamps: TimeStamp[];
   subject: Subject[];
@@ -37,6 +37,8 @@ const SchduleForm = ({
   setData,
   handleSubmit,
 }: Props) => {
+
+  // handles the changes of every input
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) {
@@ -49,7 +51,6 @@ const SchduleForm = ({
   return (
     <div>
       <form
-      
         onSubmit={handleSubmit}
         action=""
         className="space-y-5 flex flex-col "

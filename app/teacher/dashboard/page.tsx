@@ -19,6 +19,7 @@ function TeacherDashboardContent() {
   const router = useRouter();
   const user = useUser();
 
+  // fetches all the announcements according to the user's role
   const {
     data: allAnnouncement,
     error,
@@ -28,6 +29,7 @@ function TeacherDashboardContent() {
     ([url, role]) => axios.get(`${url}?&role=${role}`).then((res) => res.data)
   );
 
+  // checks the role if match
   useEffect(() => {
     if (!user || user.role !== "TEACHER") {
       console.log(user?.role);

@@ -2,6 +2,8 @@ import React from "react";
 import Image from "next/image";
 
 const Hero = () => {
+
+  // images for the hero page
   const images = [
     "chappel.jpg",
     "front.jpg",

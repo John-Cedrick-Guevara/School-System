@@ -4,6 +4,7 @@ import React from "react";
 
 const BackButton = ({ path }: { path: string }) => {
   return (
+    // removes the last path of the url
     <Link
       href={
         path.split("/").slice(0, -1).join("/").length === 0

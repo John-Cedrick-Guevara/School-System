@@ -44,10 +44,14 @@ const page = () => {
   // user data
   const user = useUser();
 
+  // used for showing forms
   const [showSetSched, setShowSetSched] = useState(false);
-  const [formError, setFormError] = useState("");
   const [isEditingSchedule, setIsEditingSchedule] = useState(false);
 
+  // form error container
+  const [formError, setFormError] = useState("");
+
+  // data to be submitted for adding
   const [scheduleData, setScheduleData] = useState<Schedule>({
     teacherId: user?.id,
     subjectId: "",
@@ -56,6 +60,7 @@ const page = () => {
     startTime: "",
     endTime: "",
   });
+  // data to be submitted for editing
   const [editScheduleData, setEditScheduleData] = useState<Schedule>({
     scheduleId: "",
     teacherId: user?.id,
@@ -82,18 +87,21 @@ const page = () => {
     mutate: subjectMutate,
   } = useSWR<Subject[]>("/api/subjects", subjectFetcher);
 
+  // for sections
   const {
     data: allSections,
     error: sectionMutate,
     mutate: sectiontError,
   } = useSWR<Section[]>("/api/sections", sectionFetcher);
 
+  // for timeStamps
   const {
     data: allTimeStamps,
     error: timeStampMutate,
     mutate: timeStampError,
   } = useSWR<TimeStamp[]>("/api/timeStamps", timeStampFetcher);
 
+  // fetches all the schedules
   const {
     data: allSchedule,
     error: scheduleError,
@@ -129,7 +137,6 @@ const page = () => {
     const parsedScheduleCredentials =
       scheduleSchema.safeParse(editScheduleData);
 
-    console.log(parsedScheduleCredentials.data);
     try {
       if (parsedScheduleCredentials.success) {
         const res = await axios.put(

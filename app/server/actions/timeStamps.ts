@@ -1,6 +1,6 @@
 import prisma from "@/lib/prisma";
-import { PrismaClient } from "@prisma/client";
 
+// handles retrieval of time Stamps
 export async function getTimeStamps() {
   try {
     const timeStamps = await prisma.time.findMany();
@@ -10,6 +10,7 @@ export async function getTimeStamps() {
   }
 }
 
+// handles the creation of timeStamps
 export async function createTimeStamp(data: { timeStamp: string }) {
   try {
     const res = await prisma.time.create({
@@ -23,6 +24,7 @@ export async function createTimeStamp(data: { timeStamp: string }) {
   }
 }
 
+// handles editing timeStamps
 export async function editTimeStamp(data: { timeStamp: string; id: number }) {
   try {
     const res = await prisma.time.update({
@@ -39,7 +41,7 @@ export async function editTimeStamp(data: { timeStamp: string; id: number }) {
   }
 }
 
-  
+  // handles deletion of timeStamps
 export async function deleteTimeStamp(data: {
   timeStamp: string;
   id: number;

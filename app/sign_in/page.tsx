@@ -1,6 +1,5 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,13 +10,16 @@ import BackButton from "../_Components/BackButton";
 
 const signIn_page = () => {
   const router = useRouter();
+  // form error container
   const [error, setError] = useState("");
+  // users credentials to be passed 
   const [credentials, setCredentials] = useState({
     action: "login",
     email: "",
     password: "",
   });
 
+  // handles the input
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) {
@@ -27,6 +29,7 @@ const signIn_page = () => {
     });
   }
 
+  // handles submission of data
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
@@ -52,7 +55,6 @@ const signIn_page = () => {
                 : "teacher"
             }/dashboard`
           );
-
         } else {
           console.log("no data given");
         }
@@ -62,6 +64,7 @@ const signIn_page = () => {
     }
   }
 
+  // removes the error after 3s
   setTimeout(() => {
     setError("");
   }, 3000);

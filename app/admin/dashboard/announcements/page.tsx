@@ -27,16 +27,22 @@ import React, { useState } from "react";
 import useSWR from "swr";
 
 const page = () => {
+  // gets the user credentials from the usercontext
   const user = useUser();
+  // gets the current path(used for the "back" button)
   const path = usePathname();
+  // used for showing add/edit announcement form 
   const [isAddingAnnouncement, setIsAddingAnnouncement] = useState(false);
   const [isEditingAnnouncement, setIsEditingAnnouncement] = useState(false);
+  // form message container
   const [formError, setFormError] = useState("");
+  // data for announcement
   const [data, setData] = useState<Announcements>({
     title: "",
     description: "",
     for: "STUDENT",
   });
+  // edited data for announcement
   const [editData, setEditData] = useState<Announcements>({
     id: "",
     title: "",
@@ -44,6 +50,7 @@ const page = () => {
     for: "STUDENT",
   });
 
+  // fetcher all the announcement for admin control
   const {
     data: allAnnouncement,
     error,
@@ -53,7 +60,7 @@ const page = () => {
     ([url, role]) => axios.get(`${url}?&role=${role}`).then((res) => res.data)
   );
 
-  // creation of data
+  // creation of announcement
   async function handleCreateAnnouncement(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const parsedAnnoucenemnt = announcementsSchema.safeParse(data);
@@ -82,6 +89,7 @@ const page = () => {
   // edit announcement
   async function handleEditAnnouncement(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    
     const parsedAnnoucenemnt = announcementsSchema.safeParse(editData);
 
     try {
@@ -105,6 +113,7 @@ const page = () => {
     }
   }
 
+  // gets the id of selected announcement
   function handleGetId(item: Announcements) {
     setIsEditingAnnouncement((prev) => !prev);
     setEditData({
@@ -115,6 +124,7 @@ const page = () => {
     });
   }
 
+    // handles deletion of announcement
   async function handleDeleteAnnouncement(item: Announcements) {
     try {
       const res = await axios.delete("/api/announcements", {
@@ -128,9 +138,10 @@ const page = () => {
 
   return (
     <div className="mt-10 z-10 ">
+      {/* back button */}
       <BackButton path={path} />
 
-      {/* tables */}
+      {/* table of announcements for operations */}
       <Table className="mt-10">
         <TableCaption>Sections:</TableCaption>
 
@@ -194,7 +205,9 @@ const page = () => {
           "scale-100 bg-secondary bg-slate-300 bg-opacity-40"
         }`}
       >
+        {/* form wrapper */}
         <div className="bg-secondary w-full max-w-md p-5 rounded-lg">
+          {/* cancel button */}
           <Button
             onClick={() => setIsAddingAnnouncement(false)}
             variant={"outline"}
@@ -202,6 +215,7 @@ const page = () => {
             <img src="/arrow.png" alt="" width={15} className=" rotate-180" />
             Cancel
           </Button>
+          {/* heading */}
           <h1 className="text-xl font-semibold mb-3 text-center">
             Create Announcement
           </h1>
@@ -211,6 +225,7 @@ const page = () => {
               {formError}
             </h1>
           )}
+          {/* announcement form */}
           <AnnouncementsForm
             buttonName="Add"
             setData={setData}
@@ -227,7 +242,9 @@ const page = () => {
           "scale-100 bg-secondary bg-slate-300 bg-opacity-40"
         }`}
       >
+        {/* form wrapper */}
         <div className="bg-secondary w-full max-w-md p-5 rounded-lg">
+          {/* cancel button */}
           <Button
             onClick={() => setIsEditingAnnouncement(false)}
             variant={"outline"}
@@ -235,6 +252,7 @@ const page = () => {
             <img src="/arrow.png" alt="" width={15} className=" rotate-180" />
             Cancel
           </Button>
+          {/* heading */}
           <h1 className="text-xl font-semibold mb-3 text-center">
             Edit Announcement
           </h1>

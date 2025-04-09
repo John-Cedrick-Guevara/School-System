@@ -1,6 +1,7 @@
 import React from "react";
 
 const Features = () => {
+  // features of the cite
   const features = [
     {
       title: "Scheduling",

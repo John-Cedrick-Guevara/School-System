@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,8 +13,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Role } from "@prisma/client";
 
+// Props needed from announcement page where the crud functions are 
 interface Props {
   buttonName: string;
   data: Announcements;
@@ -29,7 +28,8 @@ const AnnouncementsForm = ({
   setData,
   handleSubmit,
 }: Props) => {
-  //handles input
+
+  //handles input changes 
   function handleChange(
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
@@ -48,7 +48,7 @@ const AnnouncementsForm = ({
         action=""
         className="flex flex-col w-full max-w-md gap-5"
       >
-        {/* section name */}
+        {/* announcement title */}
         <div className="flex flex-col w-full max-w-md gap-1.5">
           <Label htmlFor="title">Announcement title</Label>
           <Input
@@ -61,7 +61,7 @@ const AnnouncementsForm = ({
           />
         </div>
 
-        {/* section id */}
+        {/* announcement description */}
         <div className="flex flex-col w-full max-w-md gap-1.5">
           <Label htmlFor="name">Announcement description</Label>
           <Textarea
@@ -76,6 +76,7 @@ const AnnouncementsForm = ({
         <div className="flex items-center justify-center gap-2">
           <Label htmlFor="name">Announcement Audience</Label>
 
+          {/* announcement audience */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline">{data.for}</Button>

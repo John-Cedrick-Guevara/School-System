@@ -26,19 +26,23 @@ import React, { useState } from "react";
 import useSWR from "swr";
 import { Subject } from "@/app/interfaces";
 
-
+// fetcher for subjects
 const fetcher = (url: string) =>
   axios.get(url).then((res) => res.data.subjects);
 
 const page = () => {
+  const path = usePathname();
+  // used to show form when adding/editing subjects
   const [editingSubject, setEditingSubject] = useState(false);
+  const [isAddingSubject, setIsAddingSubject] = useState(false);
+  // form error container
   const [formError, setFormError] = useState("");
+  // data for adding subjects
   const [addSubjectCredentials, setAddSubjectCredentials] = useState<Subject>({
     name: "",
     id: "",
   });
-  const [isAddingSubject, setIsAddingSubject] = useState(false);
-
+  // data for editing subjects
   const [editSubjectCredentials, setEditSubjectCredentials] = useState<Subject>(
     {
       name: "",
@@ -46,6 +50,7 @@ const page = () => {
       newId: "",
     }
   );
+  // all subjects container
   const {
     data: allSubjects,
     error,
@@ -58,7 +63,6 @@ const page = () => {
     const parsedSubjectCredentials = editSubjectSchema.safeParse(
       editSubjectCredentials
     );
-    console.log(parsedSubjectCredentials.data);
     try {
       if (parsedSubjectCredentials.success) {
         const res = await axios.put(
@@ -83,8 +87,6 @@ const page = () => {
       id: item.name,
       newId: item.id,
     });
-
-    console.log(item, editSubjectCredentials);
   }
 
   //handles creation of section
@@ -103,9 +105,9 @@ const page = () => {
         mutate();
         setIsAddingSubject(false);
         setAddSubjectCredentials({
-          id:"",
-          name:""
-        })
+          id: "",
+          name: "",
+        });
       } else {
         setFormError(parsedSubjectCredentials.error.errors[0].message);
       }
@@ -127,11 +129,10 @@ const page = () => {
     }
   }
 
+  // removes the error after 3s
   setTimeout(() => {
     setFormError("");
   }, 3000);
-
-  const path = usePathname();
 
   if (error) return <p>Error fetching data...</p>;
   if (!allSubjects) return <p>Fetching data...</p>;
@@ -140,9 +141,9 @@ const page = () => {
     <div className="mt-10 z-10 ">
       <BackButton path={path} />
 
-      {/* table */}
+      {/* table of subjects for admin control */}
       <UTable className="mt-10">
-        <TableCaption>Sections:</TableCaption>
+        <TableCaption>Subjects:</TableCaption>
 
         <TableHeader>
           <TableRow>
@@ -197,7 +198,10 @@ const page = () => {
           isAddingSubject && "scale-100 bg-secondary bg-slate-300 bg-opacity-40"
         }`}
       >
+        {/* form wrapper */}
         <div className="bg-secondary w-full max-w-md p-5 rounded-lg">
+          {/* back button */}
+
           <Button
             onClick={() => setIsAddingSubject((prev) => !prev)}
             variant={"outline"}
@@ -205,6 +209,7 @@ const page = () => {
             <img src="/arrow.png" alt="" width={15} className=" rotate-180" />
             Cancel
           </Button>
+          {/* heading */}
           <h1 className="text-xl font-semibold mb-3 text-center">
             Add Subject
           </h1>
@@ -229,7 +234,9 @@ const page = () => {
           editingSubject && "scale-100 bg-secondary bg-slate-300 bg-opacity-40"
         }`}
       >
+        {/* form wrapper */}
         <div className="bg-secondary w-full max-w-md p-5 rounded-lg">
+          {/* back button */}
           <Button
             onClick={() => setEditingSubject((prev) => !prev)}
             variant={"outline"}
@@ -237,6 +244,8 @@ const page = () => {
             <img src="/arrow.png" alt="" width={15} className=" rotate-180" />
             Cancel
           </Button>
+          {/* heading */}
+
           <h1 className="text-xl font-semibold mb-3 text-center">
             Edit Subject
           </h1>

@@ -8,7 +8,9 @@ import { Schedule } from "@prisma/client";
 
 
 const page = () => {
+  // gets the user's data
   const user = useUser();
+  // fetches all the schedule of the student
   const {
     data: allSchedule,
     error: scheduleError,
@@ -21,7 +23,6 @@ const page = () => {
         .then((res) => res.data.section.schedules)
   );
 
-  console.log(allSchedule);
   const daysOfWeek = [
     "MONDAY",
     "TUESDAY",
@@ -32,7 +33,7 @@ const page = () => {
   ];
   return (
     <div>
-      {/* viewing of schedule TABLE */}
+      {/* viewing of schedule TABLE(grid) */}
       <div>
         <div className="grid grid-flow-row grid-row-1 md:grid-cols-2 lg:grid-cols-3  xl:grid-cols-6  mt-10 mx-auto">
           {daysOfWeek.map((day, key) => (

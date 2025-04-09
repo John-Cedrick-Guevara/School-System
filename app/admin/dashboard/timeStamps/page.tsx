@@ -24,36 +24,41 @@ import useSWR from "swr";
 import TimeForm from "@/app/_Components/TimeForm";
 import { TimeStamp } from "@/app/interfaces";
 
-const fetcher = (url: string) => axios.get(url).then((res) => res.data.timeStamps);
-
+// fetcher for timeStamps
+const fetcher = (url: string) =>
+  axios.get(url).then((res) => res.data.timeStamps);
 
 const page = () => {
+  // gets the current path
+  const path = usePathname();
+
+  // used to show form when adding or editing timeStamps
   const [editingTime, setEditingTime] = useState(false);
+  const [isAddingTime, setIsAddingTime] = useState(false);
+  // form message container
   const [formError, setFormError] = useState("");
+  // data for adding timeStamps
   const [addTimeCredentials, setAddTimeCredentials] = useState<TimeStamp>({
     timeStamp: "",
     id: 0,
   });
-  const [isAddingTime, setIsAddingTime] = useState(false);
-
+  // data for editing timeStamps
   const [editTimeCredentials, setEditTimeCredentials] = useState<TimeStamp>({
     timeStamp: "",
     id: 0,
     newId: 0,
   });
+  // all timeStamps container
   const {
     data: allTimes,
     error,
     mutate,
   } = useSWR<TimeStamp[]>("/api/timeStamps", fetcher);
 
-  console.log(allTimes);
-
   // submit edited time stamp
   async function handleSubmitEditSection(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const parsedTimeCredentials = editTimeSchema.safeParse(editTimeCredentials);
-    console.log(parsedTimeCredentials.data);
     try {
       if (parsedTimeCredentials.success) {
         const res = await axios.put(
@@ -78,8 +83,6 @@ const page = () => {
       id: item.id,
       newId: item.id,
     });
-
-    console.log(item, editTimeCredentials);
   }
 
   //handles creation of time stamp
@@ -121,11 +124,10 @@ const page = () => {
     }
   }
 
+  // removes the error after 3s
   setTimeout(() => {
     setFormError("");
-  }, 5000);
-
-  const path = usePathname();
+  }, 3000);
 
   if (error) return <p>Error fetching data...</p>;
   if (!allTimes) return <p>Fetching data...</p>;
@@ -134,9 +136,9 @@ const page = () => {
     <div className="mt-10 z-10 ">
       <BackButton path={path} />
 
-      {/* table */}
+      {/* table of timeStamps for admin control*/}
       <UTable className="mt-10">
-        <TableCaption>Sections:</TableCaption>
+        <TableCaption>TimeStamps:</TableCaption>
 
         <TableHeader>
           <TableRow>
@@ -191,7 +193,9 @@ const page = () => {
           isAddingTime && "scale-100 bg-secondary bg-slate-300 bg-opacity-40"
         }`}
       >
+        {/* form wrapper */}
         <div className="bg-secondary w-full max-w-md p-5 rounded-lg">
+          {/* back button */}
           <Button
             onClick={() => setIsAddingTime((prev) => !prev)}
             variant={"outline"}
@@ -199,6 +203,7 @@ const page = () => {
             <img src="/arrow.png" alt="" width={15} className=" rotate-180" />
             Cancel
           </Button>
+          {/* heading */}
           <h1 className="text-xl font-semibold mb-3 text-center">Add Time</h1>
           {/* error message */}
           {formError && (
@@ -221,7 +226,9 @@ const page = () => {
           editingTime && "scale-100 bg-secondary bg-slate-300 bg-opacity-40"
         }`}
       >
+        {/* form wrapper */}
         <div className="bg-secondary w-full max-w-md p-5 rounded-lg">
+          {/* back button */}
           <Button
             onClick={() => setEditingTime((prev) => !prev)}
             variant={"outline"}
@@ -229,6 +236,7 @@ const page = () => {
             <img src="/arrow.png" alt="" width={15} className=" rotate-180" />
             Cancel
           </Button>
+          {/* heading */}
           <h1 className="text-xl font-semibold mb-3 text-center">Edit Time</h1>
           {/* error message */}
           {formError && (

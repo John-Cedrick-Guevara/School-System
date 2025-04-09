@@ -43,7 +43,7 @@ const page = () => {
     axios.get(`${url}?section=${sectionName}`).then((res) => res.data.users)
   );
 
-
+// handle input
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
     student: User,
@@ -89,6 +89,7 @@ const page = () => {
     });
   }
 
+  // handle submission of grades
   async function saveGrades() {
     try {
       const res = await axios.post("/api/grades", grades);

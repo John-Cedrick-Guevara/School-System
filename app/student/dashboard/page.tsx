@@ -15,8 +15,10 @@ export default function studentDashboard() {
 }
 
 function StudentDashboardContent() {
+  //gets the user's data
   const user = useUser();
 
+  // fetches all the announcements for the role of user
   const {
     data: allAnnouncement,
     error,
@@ -37,7 +39,10 @@ function StudentDashboardContent() {
       {/* announcements */}
       <div className="flex flex-col gap-2 m-10">
         {allAnnouncement?.map((item) => (
-          <div key={item.id} className=" rounded-md w-full max-w-3xl bg-secondary-foreground mx-auto p-8">
+          <div
+            key={item.id}
+            className=" rounded-md w-full max-w-3xl bg-secondary-foreground mx-auto p-8"
+          >
             <h1 className="font-bold text-3xl text-white capitalize">
               {item.title}
             </h1>

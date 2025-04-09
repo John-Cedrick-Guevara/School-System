@@ -3,8 +3,10 @@ import { createUser, logInUser } from "@/app/server/actions/studens";
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
+// handles creation of data
 export async function POST(req: Request) {
   try {
+    // data for creation 
     const body = await req.json();
     const { action, email, password, id, role, sectionId, name } = body;
 

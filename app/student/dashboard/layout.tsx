@@ -25,6 +25,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // navlinks for student page
   const navLinks = [
     {
       name: "Home",

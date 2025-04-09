@@ -12,7 +12,7 @@ import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-} from "@/components/ui/popover"; 
+} from "@/components/ui/popover";
 
 import axios from "axios";
 import { Section } from "@/app/interfaces";
@@ -21,27 +21,28 @@ import useSWR from "swr";
 import BackButton from "@/app/_Components/BackButton";
 import { usePathname } from "next/navigation";
 import SectionForm from "@/app/_Components/SectionForm";
-import { string } from "zod";
 import { Button } from "@/components/ui/button";
 import {
   createSectionSchema,
   editSectionSchema,
 } from "@/lib/schemas/schemaParser";
 
+// fetcher for the sections
 const fetcher = (url: string) =>
   axios.get(url).then((res) => res.data.sections);
 
-
-
 const Page = () => {
+  // used to show form when editing or adding sections
   const [isAddingSection, setIsAddingSection] = useState(false);
+  const [isEditingSection, setIsEditingSection] = useState(false);
+  // form error container
   const [formError, setFormError] = useState("");
+  // data for adding sections
   const [addSectionCredentials, setAddSectionCredentials] = useState<Section>({
     name: "",
     id: "",
   });
-  const [isEditingSection, setIsEditingSection] = useState(false);
-
+  // data for editing section
   const [editSectionCredentials, setEditSectionCredentials] = useState<Section>(
     {
       name: "",
@@ -49,6 +50,8 @@ const Page = () => {
       newId: "",
     }
   );
+
+  // all sections container
   const {
     data: allSections,
     error,
@@ -86,7 +89,6 @@ const Page = () => {
       id: item.name,
       newId: item.id,
     });
-
   }
 
   //handles creation of section
@@ -105,9 +107,9 @@ const Page = () => {
         mutate();
         setIsAddingSection(false);
         setAddSectionCredentials({
-          id:"",
-          name:""
-        })
+          id: "",
+          name: "",
+        });
       } else {
         setFormError(parsedSectionCredentials.error.errors[0].message);
       }
@@ -129,6 +131,7 @@ const Page = () => {
     }
   }
 
+  // removes the error after 3s
   setTimeout(() => {
     setFormError("");
   }, 3000);
@@ -141,7 +144,7 @@ const Page = () => {
     <div className="mt-10 z-10 ">
       <BackButton path={path} />
 
-      {/* tables */}
+      {/* table of sections for admin control */}
       <UITable className="mt-10">
         <TableCaption>Sections:</TableCaption>
 
@@ -198,14 +201,14 @@ const Page = () => {
           isAddingSection && "scale-100 bg-secondary bg-slate-300 bg-opacity-40"
         }`}
       >
+        {/* form wrapper */}
         <div className="bg-secondary w-full max-w-md p-5 rounded-lg">
-          <Button
-            onClick={() => setIsAddingSection(false)}
-            variant={"outline"}
-          >
+          {/* back button */}
+          <Button onClick={() => setIsAddingSection(false)} variant={"outline"}>
             <img src="/arrow.png" alt="" width={15} className=" rotate-180" />
             Cancel
           </Button>
+          {/* heading */}
           <h1 className="text-xl font-semibold mb-3 text-center">
             Add Section
           </h1>
@@ -231,7 +234,9 @@ const Page = () => {
           "scale-100 bg-secondary bg-slate-300 bg-opacity-40"
         }`}
       >
+        {/* form wrapper */}
         <div className="bg-secondary w-full max-w-md p-5 rounded-lg">
+          {/* back button */}
           <Button
             onClick={() => setIsEditingSection(false)}
             variant={"outline"}
@@ -239,6 +244,7 @@ const Page = () => {
             <img src="/arrow.png" alt="" width={15} className=" rotate-180" />
             Cancel
           </Button>
+          {/* heading */}
           <h1 className="text-xl font-semibold mb-3 text-center">
             Edit Section
           </h1>

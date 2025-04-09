@@ -7,15 +7,17 @@ import { Button } from "@/components/ui/button";
 import axios from "axios";
 
 const EditCredentials = () => {
-  const [formError, setFormError] = useState("");
+  const user = useUser(); // user data from cookie
+  const [formError, setFormError] = useState(""); // form error to be printed
 
-  const user = useUser();
+  // new user credentials
   const [data, setData] = useState({
     email: user?.email,
     name: user?.name,
     Password: "",
   });
 
+  // handles the changes of the input and saves it to the data variable
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) {
@@ -25,6 +27,7 @@ const EditCredentials = () => {
     }));
   }
 
+  // handles submission of updated user credentials
   async function submitNewData(e: React.FormEvent<HTMLFormElement>) {
     try {
       const res = await axios.put("/api/students", data);
@@ -36,6 +39,7 @@ const EditCredentials = () => {
     }
   }
 
+  // resets the form error after 3s
   setTimeout(() => {
     setFormError("");
   }, 3000);
@@ -43,11 +47,14 @@ const EditCredentials = () => {
   return (
     <main>
       <form onSubmit={submitNewData} className="space-y-5 flex flex-col ">
+        {/* form error */}
         {formError && (
           <h1 className="bg-red-500 p-2 rounded-md text-white text-center mb-4">
             {formError}
           </h1>
         )}
+
+        {/* Name input */}
         <div className="flex flex-col w-full max-w-md gap1.5">
           <Label htmlFor="title">Name</Label>
           <Input
@@ -60,6 +67,7 @@ const EditCredentials = () => {
           />
         </div>
 
+        {/* Password input */}
         <div className="flex flex-col w-full max-w-md gap-1.5">
           <Label htmlFor="title">Password</Label>
           <Input

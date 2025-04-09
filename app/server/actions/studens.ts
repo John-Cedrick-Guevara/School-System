@@ -7,21 +7,16 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { Role } from "@prisma/client";
 import { NextApiRequest } from "next";
+import { User } from "@/app/interfaces";
 
-export async function createUser(data: {
-  name: string;
-  email: string;
-  password: string;
-  sectionId?: string;
-  id: string;
-  role: "STUDENT" | "TEACHER" | "ADMIN";
-}) {
-  console.log("Server action received data:", data);
-
+// handles creation of data
+export async function createUser(data: User) {
+  // throws error if no data received
   if (!data) {
     throw new Error("No data received in request");
   }
 
+  // encryption of passowrd
   const hashedPassword = await bcrypt.hash(data.password, 5);
 
   try {
@@ -35,7 +30,6 @@ export async function createUser(data: {
         sectionId: data.sectionId || null,
       },
     });
-    console.log("Created user:", newUser);
 
     return { newUser }; // Return the object directly
   } catch (error) {
@@ -44,8 +38,10 @@ export async function createUser(data: {
   }
 }
 
+// handles retrieval of section
 export async function getUsers(section: string) {
   try {
+    // fetches the students on specific section if provided(used for grading)
     if (section) {
       const users = await prisma.user.findMany({
         where: section ? { sectionId: section } : {},
@@ -56,7 +52,9 @@ export async function getUsers(section: string) {
         },
       });
       return { users };
-    } else {
+    }
+    // fetches all the users for admin control
+    else {
       const users = await prisma.user.findMany({});
       return { users };
     }
@@ -65,19 +63,24 @@ export async function getUsers(section: string) {
   }
 }
 
+// handles logging in of user
 export async function logInUser(email: string, password: string) {
+  // throws error of no credentials provided
   if (!email || !password) {
     throw new Error("Email and password are required");
   }
 
   try {
+    // gets the user according to email
     const user = await prisma.user.findUnique({ where: { email } });
+    // returns the error when no user found
     if (!user) {
       return { message: "No User found", success: false };
     }
-
+    // checking of password when user is existing
     const passwordMatch = await bcrypt.compare(password, user.password);
 
+    // sends invalid password error
     if (!passwordMatch) {
       return { message: "Invalid Password", success: false };
     }
@@ -94,7 +97,7 @@ export async function logInUser(email: string, password: string) {
       },
       process.env.JWT_SECRET!,
       {
-        expiresIn: "1h",
+        expiresIn: "24h", // 1 day token 
       }
     );
 
@@ -110,15 +113,9 @@ export async function logInUser(email: string, password: string) {
   }
 }
 
-export async function updateUser(data: {
-  name: string;
-  email: string;
-  password: string;
-  sectionId?: string;
-  id: string;
-  role: "STUDENT" | "TEACHER" | "ADMIN";
-}) {
-
+// handles updating user's data
+export async function updateUser(data: User) {
+  // enryption of password
   const hashedPassword = await bcrypt.hash(data.password, 5);
   try {
     const res = await prisma.user.update({
@@ -140,6 +137,7 @@ export async function updateUser(data: {
   }
 }
 
+// handles deletion of user
 export async function deleteUser(email: string) {
   try {
     const res = await prisma.user.delete({

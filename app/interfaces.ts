@@ -40,7 +40,7 @@ export interface Grades {
 
 export interface User {
   grades?: Grades[];
-  action: string;
+  action?: string;
   name: string;
   email: string;
   password: string;

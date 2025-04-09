@@ -7,7 +7,8 @@ import { User } from "../interfaces";
 import React from "react";
 
 // fetcher function
-const fetcher = (url: string) => axios.get(url, { withCredentials: true }).then(res => res.data.userData);
+const fetcher = (url: string) =>
+  axios.get(url, { withCredentials: true }).then((res) => res.data.userData);
 
 export default function ProtectedRoute({
   role,
@@ -18,8 +19,13 @@ export default function ProtectedRoute({
 }) {
   const router = useRouter();
 
-  const { data: user, error, isLoading } = useSWR<User | null>("/api/auth/me", fetcher, {
-    refreshInterval: 5000, // optional: auto-refresh every 5s
+  // fetches the user
+  const {
+    data: user,
+    error,
+    isLoading,
+  } = useSWR<User | null>("/api/auth/me", fetcher, {
+    refreshInterval: 5000,
   });
 
   if (isLoading) return <p>Loading...</p>;
@@ -29,7 +35,9 @@ export default function ProtectedRoute({
     return null;
   }
 
+
   if (user.role !== role) return <p>Unauthorized</p>;
 
+  // saves the data to the user context
   return <UserContext.Provider value={user}>{children}</UserContext.Provider>;
 }

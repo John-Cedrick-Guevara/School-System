@@ -2,6 +2,7 @@ import { Schedule } from "@/app/interfaces";
 import prisma from "@/lib/prisma";
 import { Day } from "@prisma/client";
 
+// handles creation of schedule 
 export async function createSchedule(data: Schedule) {
   try {
     if (!data.teacherId) {
@@ -24,12 +25,16 @@ export async function createSchedule(data: Schedule) {
   }
 }
 
+// handles retrieval of data
 export async function getSchedule(id: string, role: string) {
   try {
+    // fetches all the schedule to restrict occupied schedules
     if (role === "TEACHER") {
       const schedule = await prisma.schedule.findMany();
       return schedule;
-    } else {
+    } 
+    // fetches the schedule for student
+    else {
       const schedule = await prisma.user.findUnique({
         where: {
           id: id,
@@ -51,8 +56,10 @@ export async function getSchedule(id: string, role: string) {
   }
 }
 
+// handles edition of data
 export async function editSchedule(data: Schedule) {
   try {
+    // 
     const schedule = await prisma.schedule.update({
       where: {
         scheduleId: data.scheduleId,
@@ -73,6 +80,7 @@ export async function editSchedule(data: Schedule) {
   }
 }
 
+// handles deletion of schedules
 export async function deleteSchedule(data: Schedule) {
   try {
     const res = await prisma.schedule.delete({

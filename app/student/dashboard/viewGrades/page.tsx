@@ -6,7 +6,9 @@ import React from "react";
 import useSWR from "swr";
 
 const page = () => {
+  // gets the user's data
   const user = useUser();
+  // fetches the grades of the current student
   const {
     data: allGrades,
     error: GradesError,
@@ -17,8 +19,8 @@ const page = () => {
       axios.get(`${url}?id=${id}&role=${role}`).then((res) => res.data)
   );
 
-  console.log(allGrades);
   return (
+    // grid table for viewing of grades
     <main>
       <div className="grid grid-flow-col grid-col-4 md:grid-cols-2 lg:grid-cols-3  xl:grid-cols-6  mt-10 mx-auto">
         {["Subject Name", "prelimGrade", "midtermGrade", "finalsGrade"].map(

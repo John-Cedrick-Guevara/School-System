@@ -1,12 +1,14 @@
 import React from "react";
 
 const Footer = () => {
+  // icons
   const socials = [
     "icon-facebook.svg",
     "icon-instagram.svg",
     "icon-pinterest.svg",
     "icon-twitter.svg",
   ];
+  
   return (
     <footer id="socials" className="bg-blue-700 p-8 scroll-smooth">
       <h1 className="text-3xl font-bold text-white text-center">Get in touch with us:</h1>

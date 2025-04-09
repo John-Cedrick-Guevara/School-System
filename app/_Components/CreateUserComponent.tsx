@@ -13,9 +13,11 @@ import {
 } from "@radix-ui/react-dropdown-menu";
 import { Label } from "@radix-ui/react-label";
 import axios from "axios";
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import React from "react";
 import { User, Section } from "../interfaces";
+import useSWR from "swr";
 
+// required props from the main page
 interface Props {
   buttonName: string;
   data: User;
@@ -23,15 +25,18 @@ interface Props {
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
 }
 
+// fetcher for sections 
+const fetcher = (url: string) =>
+  axios.get(url).then((res) => res.data.sections);
+
 const CreateUserComponent = ({
   data,
   setData,
   handleSubmit,
   buttonName,
 }: Props) => {
-  const [section, setsection] = useState("");
-  const [allsection, setAllSection] = useState<Section[]>([]);
 
+  // handles the changes of input
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) {
@@ -39,20 +44,14 @@ const CreateUserComponent = ({
       ...data,
       [e.target.name]: e.target.value,
     });
-
   }
-  
-  useEffect(() => {
-    async function getSections() {
-      try {
-        const res = await axios.get("/api/sections");
-        setAllSection(res.data.sections);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    getSections();
-  }, []);
+
+  // all sections container
+  const {
+    data: allSections,
+    error,
+    mutate,
+  } = useSWR<Section[]>("/api/sections", fetcher);
 
   return (
     <div>
@@ -92,7 +91,7 @@ const CreateUserComponent = ({
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline">
-                {section ? section : "Select Section"}
+                {data.sectionId ? data.sectionId : "Select Section"}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56 bg-white p-3 rounded-sm">
@@ -100,14 +99,13 @@ const CreateUserComponent = ({
               <DropdownMenuSeparator />
               <DropdownMenuRadioGroup
                 onValueChange={(newSection) => {
-                  setsection(newSection);
                   setData((prev) => ({
                     ...prev,
                     sectionId: newSection,
                   }));
                 }}
               >
-                {allsection.map((item, key) => {
+                {allSections?.map((item, key) => {
                   return (
                     <DropdownMenuRadioItem
                       className="hover:bg-secondary p-1 rounded-sm cursor-pointer"
@@ -150,7 +148,8 @@ const CreateUserComponent = ({
             placeholder="Password"
           />
         </div>
-
+        
+        {/* Role : teacher or student */}
         <div className="flex items-center justify-center gap-2">
           <h1>Student</h1>
           <Switch
@@ -164,7 +163,8 @@ const CreateUserComponent = ({
           />
           <h1>Teacher</h1>
         </div>
-
+        
+        {/* submit bubtton */}
         <Button variant={"default"} size={"lg"}>
           {buttonName}
         </Button>

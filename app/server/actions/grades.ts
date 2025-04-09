@@ -2,13 +2,15 @@ import { Grades } from "@/app/interfaces";
 import prisma from "@/lib/prisma";
 import { number, string } from "zod";
 
+// terms
 const terms: string[] = ["prelimGrade", "midtermGrade", "finalsGrade"];
+
 interface toUpdateGrades {
   [key: string]: number | null;
 }
 
 export async function uploadGrades(data: Grades[]) {
-  let toUpdate: toUpdateGrades = {};
+  let toUpdate: toUpdateGrades = {}; // terms to be updated(to add grade on terms that is still null)
 
   try {
     for (const grade of data) {
@@ -38,6 +40,7 @@ export async function uploadGrades(data: Grades[]) {
   }
 }
 
+// gets the grades
 export async function getGrades(id: string, role: string) {
   try {
     if (role === "TEACHER") {

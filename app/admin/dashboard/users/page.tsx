@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Table,
   TableBody,
@@ -22,7 +22,6 @@ import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
@@ -30,35 +29,37 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import useSWR, { mutate } from "swr";
+import useSWR from "swr";
 import { usePathname } from "next/navigation";
 import BackButton from "@/app/_Components/BackButton";
-import { editUserSchema, signUpSchema } from "@/lib/schemas/schemaParser";
-import { cn } from "@/lib/utils";
-import { ChevronsUpDown, Check } from "lucide-react";
+import { signUpSchema } from "@/lib/schemas/schemaParser";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Section, User } from "@/app/interfaces";
 import { useUser } from "@/app/context/UserContext";
 
+// section fetcher
 const sectionFetcher = (url: string) =>
   axios.get(url).then((res) => res.data.sections);
 
 // main
 const usersPage = () => {
-  const user = useUser();
-  const path = usePathname();
+  const user = useUser(); // gets the users data
+  const path = usePathname(); // gets the current path
 
-  const [section, setSection] = React.useState("");
-  const [searchId, setSearchId] = React.useState("");
+  // search inputs
+  const [section, setSection] = useState("");
+  const [searchId, setSearchId] = useState("");
   const [role, setRole] = React.useState("");
 
+  // all sections container
   const {
     data: allSections,
     error: sectionError,
     mutate: mutateSections,
   } = useSWR<Section[]>("/api/sections", sectionFetcher);
 
+  // all users container and fetcher
   const {
     data: allUsers,
     error: userError,
@@ -67,8 +68,11 @@ const usersPage = () => {
     axios.get(`${url}?role=${role}`).then((res) => res.data.users)
   );
 
+  // used to show form when editing user credentials
   const [editUser, setEditUser] = useState<boolean>(false);
+  // form eror container
   const [formError, setFormError] = useState<String>("");
+  // user data for editing
   const [userData, setUserData] = useState<User>({
     action: "edit data",
     email: "",
@@ -79,17 +83,15 @@ const usersPage = () => {
     sectionId: "",
   });
 
-  console.log(allUsers);
-
+  // handles submission of edited data of users
   async function handleSubmitEditedUser(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     const parsedData = signUpSchema.safeParse(userData);
-console.log(parsedData.error?.errors)
     try {
       if (parsedData.success) {
         const res = await axios.put("/api/students", parsedData.data);
-        mutateUsers(); // Re-fetch data after successful update
+        mutateUsers();
         setEditUser((prev) => !prev);
       } else {
         setFormError(parsedData.error.errors[0].message);
@@ -99,6 +101,7 @@ console.log(parsedData.error?.errors)
     }
   }
 
+  // handles deletion of user
   async function handleDelete(data: User) {
     try {
       const res = await axios.delete("/api/students", { data: data });
@@ -108,14 +111,16 @@ console.log(parsedData.error?.errors)
     }
   }
 
+  // handles getting user info to edit
   function handleEditUser(user: User) {
     setEditUser((prev) => !prev);
     setUserData((prev) => ({
       ...user,
-      action: prev.action ?? "edit data", 
+      action: prev.action ?? "edit data",
     }));
   }
 
+  // removes form error after 3s
   setTimeout(() => {
     setFormError("");
   }, 3000);
@@ -125,6 +130,7 @@ console.log(parsedData.error?.errors)
 
   return (
     <div className="mt-10 z-10 ">
+      {/* back button */}
       <BackButton path={path} />
 
       {/* commands */}
@@ -248,12 +254,15 @@ console.log(parsedData.error?.errors)
         </TableBody>
       </Table>
 
+      {/* form for edit user */}
       <div
         className={`w-full  h-screen absolute top-0 right-0 flex items-center justify-center mx-auto transition-all scale-0 z-30 ${
           editUser && "scale-100 bg-secondary bg-slate-300 bg-opacity-40"
         }`}
       >
+        {/* form wrapper */}
         <div className="bg-secondary w-full max-w-md p-5 rounded-lg">
+          {/* cancel button */}
           <Button
             onClick={() => setEditUser((prev) => !prev)}
             variant={"outline"}
@@ -261,6 +270,7 @@ console.log(parsedData.error?.errors)
             <img src="/arrow.png" alt="" width={15} className=" rotate-180" />
             Cancel
           </Button>
+          {/* heading */}
           <h1 className="text-xl font-semibold mb-3 text-center">Edit User</h1>
 
           {/* error message */}

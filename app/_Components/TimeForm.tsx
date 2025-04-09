@@ -30,7 +30,7 @@ const TimeForm = ({ buttonName, data, setData, handleSubmit }: Props) => {
         action=""
         className="flex flex-col w-full max-w-md gap-5"
       >
-        {/* section name */}
+        {/* Time stamp input */}
         <div className="flex flex-col w-full max-w-md gap-1.5">
           <Label htmlFor="time">Time</Label>
           <Input
