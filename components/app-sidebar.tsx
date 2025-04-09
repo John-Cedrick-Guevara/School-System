@@ -16,6 +16,7 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import EditCredentials from "@/app/_Components/EditCredentials";
 
 interface navLink {
   name: string;
@@ -27,6 +28,7 @@ interface Props {
 }
 
 export function AppSidebar({ item }: Props) {
+  const [isEditingCredentials, setIsEditingCredentials] = useState(false);
   const [curr, setCurr] = useState("");
   const router = useRouter();
 
@@ -36,6 +38,7 @@ export function AppSidebar({ item }: Props) {
       router.push("/");
     } catch (error) {
       console.log(error);
+    } finally {
     }
   }
   return (
@@ -65,7 +68,11 @@ export function AppSidebar({ item }: Props) {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter className="space-y-2 pb-10">
-        <Button onClick={handleLogOut} className="w-full " variant={"outline"}>
+        <Button
+          onClick={() => setIsEditingCredentials(true)}
+          className="w-full "
+          variant={"outline"}
+        >
           Edit Credentials
         </Button>
         <Button
@@ -75,6 +82,30 @@ export function AppSidebar({ item }: Props) {
         >
           Log Out
         </Button>
+
+        {/* form */}
+        <div
+          className={`w-full h-screen fixed top-0 right-0 left-0 flex items-center justify-center mx-auto transition-all scale-0 z-30 ${
+            isEditingCredentials &&
+            "scale-100 bg-secondary bg-slate-300 bg-opacity-40"
+          }`}
+        >
+          <div className="bg-secondary w-full max-w-md p-5 rounded-lg">
+            <Button
+              onClick={() => setIsEditingCredentials(false)}
+              variant={"outline"}
+            >
+              <img src="/arrow.png" alt="" width={15} className=" rotate-180" />
+              Cancel
+            </Button>
+            <h1 className="text-xl font-semibold mb-3 text-center">
+              Edit Credentials
+            </h1>
+            {/* error message */}
+
+            <EditCredentials />
+          </div>
+        </div>
       </SidebarFooter>
     </Sidebar>
   );

@@ -35,7 +35,7 @@ function TeacherDashboardContent() {
     }
   }, [user]);
 
-  console.log(allAnnouncement)
+
 
   return (
     <main>

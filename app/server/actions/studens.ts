@@ -86,6 +86,7 @@ export async function logInUser(email: string, password: string) {
     const token = jwt.sign(
       {
         userData: {
+          email: user.email,
           name: user.name,
           role: user.role,
           id: user.id,
@@ -117,6 +118,8 @@ export async function updateUser(data: {
   id: string;
   role: "STUDENT" | "TEACHER" | "ADMIN";
 }) {
+
+  const hashedPassword = await bcrypt.hash(data.password, 5);
   try {
     const res = await prisma.user.update({
       where: {
@@ -126,7 +129,7 @@ export async function updateUser(data: {
         id: data.id,
         name: data.name,
         email: data.email,
-        password: data.password,
+        password: hashedPassword,
         role: data.role as Role,
         sectionId: data.sectionId || null,
       },

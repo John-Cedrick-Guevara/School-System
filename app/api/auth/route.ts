@@ -8,8 +8,6 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { action, email, password, id, role, sectionId, name } = body;
 
-
-
     // creates the new user
     if (action === "signup") {
       const newStudent = await createUser({
@@ -26,7 +24,7 @@ export async function POST(req: Request) {
     // logIn new user
     if (action === "login") {
       const logUser = await logInUser(email, password);
-       return NextResponse.json({ message: logUser }, { status: 201 });
+      return NextResponse.json({ message: logUser }, { status: 201 });
     }
 
     return NextResponse.json({ error: "Invalid action" }, { status: 400 });

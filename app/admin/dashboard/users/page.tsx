@@ -85,10 +85,10 @@ const usersPage = () => {
     e.preventDefault();
 
     const parsedData = signUpSchema.safeParse(userData);
-
+console.log(parsedData.error?.errors)
     try {
       if (parsedData.success) {
-        const res = await axios.put("/api/students", userData);
+        const res = await axios.put("/api/students", parsedData.data);
         mutateUsers(); // Re-fetch data after successful update
         setEditUser((prev) => !prev);
       } else {
@@ -112,7 +112,7 @@ const usersPage = () => {
     setEditUser((prev) => !prev);
     setUserData((prev) => ({
       ...user,
-      action: prev.action ?? "edit data", // Ensure action is always present
+      action: prev.action ?? "edit data", 
     }));
   }
 

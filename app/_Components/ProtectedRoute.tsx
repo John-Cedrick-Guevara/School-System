@@ -1,10 +1,13 @@
 "use client";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import useSWR from "swr";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import { UserContext } from "@/app/context/UserContext";
 import { User } from "../interfaces";
+import React from "react";
 
+// fetcher function
+const fetcher = (url: string) => axios.get(url, { withCredentials: true }).then(res => res.data.userData);
 
 export default function ProtectedRoute({
   role,
@@ -14,35 +17,19 @@ export default function ProtectedRoute({
   children: React.ReactNode;
 }) {
   const router = useRouter();
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function fetchUser() {
-      try {
-        const res = await axios.get("/api/auth/me", { withCredentials: true });
+  const { data: user, error, isLoading } = useSWR<User | null>("/api/auth/me", fetcher, {
+    refreshInterval: 5000, // optional: auto-refresh every 5s
+  });
 
-        if (res.data?.userData) {
-          setUser(res.data.userData);
-          
-        } else {
-          router.push("/sign_in");
-        }
-      } catch (error) {
-        console.error("Error fetching user:", error);
-        router.push("/sign_in");
-      } finally {
-        setLoading(false);
-      }
-    }
+  if (isLoading) return <p>Loading...</p>;
 
-    fetchUser();
-  }, []);
+  if (error || !user) {
+    router.push("/sign_in");
+    return null;
+  }
 
-
-
-  if (loading) return <p>Loading...</p>; //Prevents rendering before data is available
-  if (!user || user.role !== role) return <p>Unauthorized</p>;
+  if (user.role !== role) return <p>Unauthorized</p>;
 
   return <UserContext.Provider value={user}>{children}</UserContext.Provider>;
 }
